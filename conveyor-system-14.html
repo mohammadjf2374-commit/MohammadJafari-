@@ -79,7 +79,7 @@ let db=(()=>{try{return JSON.parse(LS.g('cvdb')||'null')}catch(e){return null}})
 const save=()=>{LS.s('cvdb',JSON.stringify(db));CS.mark()};
 // ---------- همگام‌سازی ابری (Firebase Firestore) ----------
 const CS=(()=>{
-const off={mark(){}};
+const off={mark(){},sync(){alert('همگام‌سازی ابری در این نسخه فعال نیست.\nفایل‌های firebase-config.js و firebase-app-compat.js و firebase-firestore-compat.js باید کنار فایل HTML داخل برنامه باشند.')}};
 if(!window.FB_CONFIG||typeof firebase=='undefined')return off;
 const DEV=LS.g('cvdev')||(v=>(LS.s('cvdev',v),v))(Math.random().toString(36).slice(2,10));
 const bd=document.createElement('div');
@@ -122,6 +122,16 @@ db=nd;LS.s('cvdb',s);LS.s('cvrev',m.t);LS.s('cvdirty','0');
 if(me){const u=(db.users||[]).find(v=>v.u==me.u&&v.p==me.p);if(u)me=u}
 refresh();say('☁️ همگام شد');
 }catch(e){say('⚠️ دریافت ناموفق');if((n||0)<5)setTimeout(()=>pull(m,(n||0)+1),10000)}}
+async function syncNow(){
+if(!navigator.onLine){say('📴 آفلاین');alert('اینترنت وصل نیست.');return}
+say('⏳ در حال همگام‌سازی…');
+try{
+if(isDirty())await push(true);
+const sn=await col.doc('meta').get({source:'server'});
+if(!sn.exists){LS.s('cvdirty','1');await push(true);return}
+const m=sn.data();lastN=m.n;
+if(m.t!==LS.g('cvrev'))await pull(m);else say('☁️ همگام شد');
+}catch(e){say('⚠️ همگام‌سازی ناموفق')}}
 col.doc('meta').onSnapshot(async snap=>{
 if(snap.metadata.fromCache)return;
 if(!snap.exists){LS.s('cvdirty','1');push(true);return}
@@ -131,7 +141,7 @@ if(isDirty()&&LS.g('cvrev')!==null){push(true);return}
 pull(m)},e=>say('📴 آفلاین'));
 addEventListener('online',()=>{if(isDirty())schedule()});
 addEventListener('offline',()=>say('📴 آفلاین'));
-return{mark(){if(LS.g('cvrev')===null)return;LS.s('cvdirty','1');say(navigator.onLine?'⏳ تغییرات ارسال می‌شود':'📴 آفلاین — پس از اتصال ارسال می‌شود');schedule()}};
+return{sync:syncNow,mark(){if(LS.g('cvrev')===null)return;LS.s('cvdirty','1');say(navigator.onLine?'⏳ تغییرات ارسال می‌شود':'📴 آفلاین — پس از اتصال ارسال می‌شود');schedule()}};
 })();
 const h=s=>{let a=5381,b=52711;for(const c of s){a=(a*33)^c.charCodeAt(0);b=(b*31+c.charCodeAt(0))|0}return (a>>>0).toString(36)+(b>>>0).toString(36)};
 db.users=db.users||[{u:'admin',p:h('admin123'),role:'admin',name:'مدیر سامانه'},{u:'user',p:h('user123'),role:'user',name:'کاربر'}];
@@ -419,6 +429,7 @@ return `<div class="card"><b>فیلدهای فرم ثبت خرابی و تعمی
 <div><label>نقش</label><select id="u_r"><option value="user">کاربر</option><option value="admin">مدیر</option></select></div></div><button class="b" onclick="addUser()">ذخیره کاربر</button></div>
 <div class="card"><b>دسته‌بندی انواع خرابی</b><p>${db.cats.map(c=>sp(esc(c),'')).join('')}</p>
 <input id="nc" placeholder="دسته‌بندی جدید"><button class="b" onclick="const v=$('#nc').value.trim();if(v&&!db.cats.includes(v)){db.cats.push(v);lg('دسته‌بندی '+v);save();go('set')}">افزودن</button></div>
+<div class="card"><b>همگام‌سازی و بروزرسانی</b><br><button class="b" onclick="CS.sync()">🔄 Sync now</button><button class="b s" onclick="location.reload()">♻️ بارگذاری مجدد برنامه</button></div>
 <div class="card"><b>پشتیبان‌گیری</b><br><button class="b" onclick="const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(db)],{type:'application/json'}));a.download='conveyor-backup.json';a.click()">دانلود نسخه پشتیبان</button>
 <label>بازیابی از فایل</label><input type="file" accept=".json" onchange="const f=this.files[0],r=new FileReader();r.onload=()=>{try{db=JSON.parse(r.result);save();logout()}catch(e){alert('فایل نامعتبر است')}};r.readAsText(f)"></div>
 <div class="card"><b>گزارش تغییرات</b><div class="tw"><table><tr><th>زمان</th><th>کاربر</th><th>عملیات</th></tr>${db.log.slice(-40).reverse().map(l=>`<tr><td>${fmtJ(l.at)} ${new Date(l.at).toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'})}</td><td>${esc(l.u)}</td><td>${esc(l.act)}</td></tr>`).join('')}</table></div></div>`}
@@ -434,7 +445,7 @@ function delUser(u){if(confirm('کاربر حذف شود؟')){db.users=db.users.
 // ---------- ورود ----------
 function login(){const x=db.users.find(v=>v.u==$('#lu').value.trim()&&v.p==h($('#lp').value));if(!x)return alert('نام کاربری یا رمز اشتباه است.');me=x;SS.s('cvme',JSON.stringify(x));start()}
 function logout(){SS.d('cvme');me=null;start()}
-function start(){$('#brand').textContent=$('#bf').textContent=db.brand;$('#bsep').style.display=db.brand?'':'none';$('#hu').innerHTML=me?`${esc(me.name||me.u)} (${me.role=='admin'?'مدیر':'کاربر'}) <button class="b s" style="padding:3px 10px;margin:0" onclick="logout()">خروج</button>`:'';
+function start(){$('#brand').textContent=$('#bf').textContent=db.brand;$('#bsep').style.display=db.brand?'':'none';$('#hu').innerHTML=me?`${esc(me.name||me.u)} (${me.role=='admin'?'مدیر':'کاربر'}) <button class="b s" style="padding:3px 10px;margin:0" onclick="CS.sync()">🔄 Sync now</button> <button class="b s" style="padding:3px 10px;margin:0" onclick="logout()">خروج</button>`:'';
 if(!me){$('#nav').innerHTML='';$('#app').innerHTML='<div class="card login"><b>ورود به سامانه</b><label>نام کاربری</label><input id="lu"><label>رمز عبور</label><input id="lp" type="password" onkeydown="if(event.key==\'Enter\')login()"><button class="b" onclick="login()">ورود</button></div>'}else go('dash')}
 start();
 
