@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>سامانه مدیریت نوار نقاله‌ها</title>
+<style>
+:root{--g:#d6e4ff;--bg:#eef1f5;--card:#fff;--tx:#1e293b;--mut:#64748b;--pr:#1d4ed8;--bd:#d6dce5;--ok:#16a34a;--bad:#dc2626;--warn:#d97706}
+@media(prefers-color-scheme:dark){:root{--g:#1e3a8a;--bg:#0f172a;--card:#1e293b;--tx:#e2e8f0;--mut:#94a3b8;--pr:#60a5fa;--bd:#334155}}
+*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Vazirmatn,sans-serif;background:var(--bg) linear-gradient(180deg,var(--g),var(--bg) 340px) no-repeat;color:var(--tx);font-size:14px}
+header{background:linear-gradient(90deg,#0f2744,#1e40af);color:#fff;padding:12px 16px}header h1{margin:0;font-size:17px}
+nav{display:flex;gap:4px;flex-wrap:wrap;padding:8px;background:var(--card);border-bottom:1px solid var(--bd)}
+nav button{border:0;background:none;color:var(--tx);padding:8px 14px;border-radius:6px;cursor:pointer;font:inherit}
+nav button.on{background:var(--pr);color:#fff}
+main{padding:12px;max-width:1100px;margin:auto}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 6px 18px #1d4ed81a}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kpi{border-right:4px solid var(--pr);padding:10px;background:var(--card);border-radius:8px;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);border-left:1px solid var(--bd)}
+.kpi b{display:block;font-size:22px;margin-top:4px}.kpi span{color:var(--mut);font-size:12px}
+label{display:block;font-size:12px;color:var(--mut);margin:8px 0 3px}
+input,select,textarea{width:100%;padding:8px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--tx);font:inherit}
+.f{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0 12px}
+button.b{background:var(--pr);color:#fff;border:0;padding:9px 16px;border-radius:6px;cursor:pointer;font:inherit;margin:8px 4px 0 0}
+button.b.s{background:#64748b}button.b.d{background:var(--bad);padding:4px 10px;margin:0}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse}th,td{max-width:220px;overflow:hidden;text-overflow:ellipsis;padding:7px 9px;border-bottom:1px solid var(--bd);text-align:right;white-space:nowrap}
+th{background:var(--bg);font-size:12px}
+.up{color:var(--bad)}.dn{color:var(--ok)}.tag{padding:2px 8px;border-radius:10px;font-size:11px;color:#fff}
+.lg span{display:inline-block;margin-left:14px;font-size:12px}.lg i{display:inline-block;width:12px;height:12px;vertical-align:middle;margin-left:4px;border-radius:2px}
+.yrs label{display:inline-block;margin:0 0 0 12px;color:var(--tx)}.yrs input{width:auto}
+.login{max-width:320px;margin:50px auto}.dpo{position:fixed;inset:0;background:#0007;display:flex;align-items:center;justify-content:center;z-index:99}.dpc{background:var(--card);padding:12px;border-radius:12px;width:min(340px,94vw)}.dt{table-layout:fixed;margin-top:8px}.dt th,.dt td{padding:2px;text-align:center;border:0}.dd{width:100%;padding:8px 0;border:1px solid transparent;border-radius:6px;background:none;color:var(--tx);cursor:pointer;font:inherit}.dd:hover{background:var(--bg)}.dd.on{background:var(--pr);color:#fff}.dd.td{border-color:var(--pr)}
+.top{position:relative;overflow:hidden}.top::before{content:"";position:absolute;top:-120px;right:-90px;width:420px;height:420px;border-radius:50%;background:linear-gradient(135deg,#5b8def,#2f5fd0);opacity:.9;z-index:0}.top>*{position:relative;z-index:1}
+.menub{position:absolute;top:10px;left:14px;width:46px;height:46px;border-radius:50%;background:#ffffff40;border:0;color:#fff;font-size:22px;cursor:pointer;z-index:3}.menub i{position:absolute;top:2px;right:2px;width:12px;height:12px;border-radius:50%;background:#22c55e;border:2px solid #fff}
+.hero{position:relative;min-height:230px;background:var(--card);border-radius:30px;padding:22px 20px;margin:46px 0 14px;overflow:hidden;box-shadow:0 14px 34px #1d4ed833;display:flex;flex-direction:column;justify-content:center}
+.himg{position:absolute;top:0;bottom:0;right:0;width:62%;background-size:cover;background-position:center;-webkit-mask-image:linear-gradient(to left,#000 55%,transparent);mask-image:linear-gradient(to left,#000 55%,transparent)}.himg svg{width:100%;height:100%}
+.hbody{position:relative;z-index:2;max-width:62%;direction:rtl}.hd{display:flex;gap:7px;margin-bottom:12px}.hd i{width:11px;height:11px;border-radius:50%;background:#bcd0f7}.hd i:first-child{background:#2f5fd0}
+.hlab{color:#475569;font-size:14px}.hero h2{margin:4px 0 6px;font-size:21px;line-height:1.7;color:#1e3a8a}.hero p{margin:0;color:#64748b;font-size:13px}.hbar{width:54px;height:5px;border-radius:5px;background:#2f5fd0;margin:12px 0 14px}
+.hero .b{background:#13266b;border-radius:30px;margin:0;padding:12px 24px;box-shadow:0 8px 18px #13266b55}
+.hbt{position:absolute;right:12px;z-index:3;display:flex;flex-direction:column;gap:8px}.hbt button,.zt button{width:42px;height:42px;border-radius:50%;border:0;background:#fff;cursor:pointer;font-size:19px;box-shadow:0 3px 10px #0002}
+.sr{display:flex;align-items:center;gap:8px;background:var(--card);border-radius:30px;padding:6px 20px;margin-bottom:14px;box-shadow:0 8px 22px #1d4ed81f;flex-direction:row-reverse}.sr input{border:0;background:none;outline:0;font-size:15px;padding:12px 4px}.sr span{font-size:22px}
+.zg{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:14px}@media(min-width:760px){.zg{grid-template-columns:repeat(4,1fr)}}
+.za0{border:2.5px dashed #2f5fd0;border-radius:28px;background:var(--card);min-height:215px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#2f5fd0;font-weight:bold;font-size:17px;cursor:pointer}.za0 i{width:80px;height:80px;border-radius:24px;background:#e7eefc;display:grid;place-items:center;font-size:40px;font-style:normal}
+.zc{position:relative;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 14%,var(--card)),var(--card));border-radius:28px;padding:16px;min-height:215px;cursor:pointer;overflow:hidden;box-shadow:0 10px 26px #1d4ed824;display:flex;flex-direction:column;justify-content:flex-end}
+.zc::after{content:"";position:absolute;left:-10%;bottom:-18px;width:60%;height:34px;border-radius:50%;background:var(--c)}
+.zi{position:absolute;top:14px;right:12px;width:84px;height:84px;border-radius:50%;background:var(--c);display:grid;place-items:center;font-size:40px;border:7px solid var(--card);box-shadow:0 6px 16px #0002;background-size:cover;background-position:center}
+.zt{position:absolute;top:10px;left:8px;right:104px;display:flex;gap:6px;flex-wrap:wrap}.zt button{width:34px;height:34px;font-size:15px;background:#ffffffd0}
+.zc b{display:block;font-size:24px;color:#1e293b}.zc span{color:var(--mut);font-size:14px}.zc small{display:block;margin-top:6px;color:var(--mut);font-size:11px}
+.zar{position:absolute;left:12px;bottom:12px;z-index:2;width:46px;height:46px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-size:24px;font-style:normal}
+.rings{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px;text-align:center}.ring{width:74px;height:74px;margin:auto;border-radius:50%;background:conic-gradient(var(--c) calc(var(--p)*1%),var(--bd) 0);display:grid;place-items:center}.ring span{width:56px;height:56px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:24px}.rg b{display:block;font-size:17px;margin-top:6px}.rg small{color:var(--mut);font-size:11px}
+.empty{color:var(--mut);text-align:center;padding:20px}
+.tw td input,.tw td select{padding:4px 6px;min-width:90px;border-radius:5px}.cvl a{color:var(--pr)}
+@media print{footer,header~nav,nav,.np{display:none!important}body{background:#fff;color:#000}.card{border:1px solid #999}}
+.rpr{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-radius:14px;padding:8px 14px;margin:8px 0;font-weight:bold}.rpr button{border:0;background:none;font-size:19px;cursor:pointer;padding:2px 6px}.rda{border:2px dashed var(--pr);border-radius:14px;text-align:center;padding:12px;color:var(--pr);cursor:pointer;margin-top:8px}
+</style>
+</head>
+<body>
+<header><h1><b id="brand"></b><span id="bsep"> | </span>سامانه مدیریت نوار نقاله‌ها و گزارش‌گیری تعمیرات <span id="hu" style="float:left;font-size:13px;font-weight:normal"></span></h1></header>
+<nav id="nav"></nav>
+<main id="app"></main>
+<footer><span id="bf"></span><span><i></i>آنلاین</span></footer>
+<script src="firebase-config.js"></script>
+<script src="firebase-app-compat.js"></script>
+<script src="firebase-firestore-compat.js"></script>
+<script>
+// ---------- تقویم شمسی ----------
+function j2g(jy,jm,jd){jy+=1595;var d=-355668+365*jy+~~(jy/33)*8+~~(((jy%33)+3)/4)+jd+(jm<7?(jm-1)*31:((jm-7)*30)+186),gy=400*~~(d/146097);d%=146097;
+if(d>36524){gy+=100*~~(--d/36524);d%=36524;if(d>=365)d++}gy+=4*~~(d/1461);d%=1461;if(d>365){gy+=~~((d-1)/365);d=(d-1)%365}
+var gd=d+1,s=[0,31,(gy%4==0&&gy%100!=0)||gy%400==0?29:28,31,30,31,30,31,31,30,31,30,31],gm;for(gm=0;gm<13;gm++){if(gd<=s[gm])break;gd-=s[gm]}return[gy,gm,gd]}
+function g2j(gy,gm,gd){var m=[0,31,59,90,120,151,181,212,243,273,304,334],g2=gm>2?gy+1:gy,d=355666+365*gy+~~((g2+3)/4)-~~((g2+99)/100)+~~((g2+399)/400)+gd+m[gm-1],jy=-1595+33*~~(d/12053);d%=12053;
+jy+=4*~~(d/1461);d%=1461;if(d>365){jy+=~~((d-1)/365);d=(d-1)%365}return[jy,d<186?1+~~(d/31):7+~~((d-186)/30),1+(d<186?d%31:(d-186)%30)]}
+const MN=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+const norm=s=>String(s||'').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).trim();
+const fa=n=>Number(n).toLocaleString('fa-IR',{maximumFractionDigits:1});
+function toTs(ds,t){const m=norm(ds).match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);if(!m)return null;const[y,mo,d]=j2g(+m[1],+m[2],+m[3]),[h,mi]=(t||'00:00').split(':');return Date.UTC(y,mo-1,d,+h,+mi)}
+function fmtJ(ts){const d=new Date(ts),j=g2j(d.getUTCFullYear(),d.getUTCMonth()+1,d.getUTCDate());return fa(j[0]).replace(/٬/g,'')+'/'+fa(j[1])+'/'+fa(j[2])}
+const now=new Date(),TJ=g2j(now.getFullYear(),now.getMonth()+1,now.getDate()),CY=TJ[0],CM=TJ[1];
+// ---------- پایگاه داده (localStorage) ----------
+const MEM={},ST=(w=>({g:k=>{try{return window[w].getItem(k)}catch(e){return MEM[w+k]||null}},s:(k,v)=>{try{window[w].setItem(k,v)}catch(e){MEM[w+k]=v}},d:k=>{try{window[w].removeItem(k)}catch(e){delete MEM[w+k]}}})),LS=ST('localStorage'),SS=ST('sessionStorage');
+let db=(()=>{try{return JSON.parse(LS.g('cvdb')||'null')}catch(e){return null}})()||{cv:[],rp:[],cats:['پارگی تسمه','خرابی رولیک','خرابی یاتاقان','خرابی درام','خرابی گیربکس','خرابی الکتروموتور','خرابی سیستم کشش','خرابی شوت','خرابی سازه','سایر موارد']};
+const save=()=>{LS.s('cvdb',JSON.stringify(db));CS.mark()};
+// ---------- همگام‌سازی ابری (Firebase Firestore) ----------
+const CS=(()=>{
+const off={mark(){}};
+if(!window.FB_CONFIG||typeof firebase=='undefined')return off;
+const DEV=LS.g('cvdev')||(v=>(LS.s('cvdev',v),v))(Math.random().toString(36).slice(2,10));
+const bd=document.createElement('div');
+bd.style.cssText='position:fixed;left:8px;bottom:8px;z-index:9999;background:#0f172ae6;color:#fff;font-size:12px;padding:4px 10px;border-radius:14px;direction:rtl;pointer-events:none;font-family:inherit';
+const mount=()=>document.body.appendChild(bd);document.body?mount():addEventListener('DOMContentLoaded',mount);
+const say=t=>{bd.textContent=t};
+const isDirty=()=>LS.g('cvdirty')=='1';
+const CH=250000;let col,fsd,timer=0,busy=0,lastN=0;
+try{firebase.initializeApp(window.FB_CONFIG);fsd=firebase.firestore();col=fsd.collection('cvsync')}catch(e){say('⚠️ خطا در اتصال ابری');return off}
+const schedule=()=>{clearTimeout(timer);timer=setTimeout(()=>push(),1500)};
+async function push(force){
+if(busy)return;if(!force&&!isDirty())return;
+if(!navigator.onLine){say('📴 آفلاین — پس از اتصال ارسال می‌شود');return}
+busy=1;say('⏳ در حال ارسال…');
+try{
+const s=JSON.stringify(db),parts=[];for(let i=0;i<s.length;i+=CH)parts.push(s.slice(i,i+CH));
+if(!parts.length)parts.push('');
+const t=Date.now()+'-'+DEV,b=fsd.batch();
+parts.forEach((p,i)=>b.set(col.doc('c'+i),{d:p}));
+for(let i=parts.length;i<lastN;i++)b.delete(col.doc('c'+i));
+b.set(col.doc('meta'),{n:parts.length,t:t,by:DEV});
+await b.commit();
+lastN=parts.length;LS.s('cvrev',t);
+if(s===JSON.stringify(db)){LS.s('cvdirty','0');say('☁️ همگام شد')}else schedule();
+}catch(e){say('⚠️ ارسال ناموفق — دوباره تلاش می‌شود');setTimeout(()=>push(force),15000)}
+busy=0}
+function refresh(){
+if(!me)return;
+const a=document.activeElement;
+if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)){setTimeout(refresh,4000);return}
+try{$('#brand').textContent=$('#bf').textContent=db.brand;$('#bsep').style.display=db.brand?'':'none';go(tab)}catch(e){}}
+async function pull(m,n){
+say('⏳ دریافت اطلاعات…');
+try{
+const q=await col.get({source:'server'}),ch={};
+q.forEach(d=>{if(d.id!='meta')ch[d.id]=d.data().d});
+let s='';for(let i=0;i<m.n;i++){if(ch['c'+i]==null)throw 0;s+=ch['c'+i]}
+const nd=JSON.parse(s);
+db=nd;LS.s('cvdb',s);LS.s('cvrev',m.t);LS.s('cvdirty','0');
+if(me){const u=(db.users||[]).find(v=>v.u==me.u&&v.p==me.p);if(u)me=u}
+refresh();say('☁️ همگام شد');
+}catch(e){say('⚠️ دریافت ناموفق');if((n||0)<5)setTimeout(()=>pull(m,(n||0)+1),10000)}}
+col.doc('meta').onSnapshot(async snap=>{
+if(snap.metadata.fromCache)return;
+if(!snap.exists){LS.s('cvdirty','1');push(true);return}
+const m=snap.data();lastN=m.n;
+if(m.t===LS.g('cvrev')){if(isDirty())push(true);else say('☁️ همگام شد');return}
+if(isDirty()&&LS.g('cvrev')!==null){push(true);return}
+pull(m)},e=>say('📴 آفلاین'));
+addEventListener('online',()=>{if(isDirty())schedule()});
+addEventListener('offline',()=>say('📴 آفلاین'));
+return{mark(){if(LS.g('cvrev')===null)return;LS.s('cvdirty','1');say(navigator.onLine?'⏳ تغییرات ارسال می‌شود':'📴 آفلاین — پس از اتصال ارسال می‌شود');schedule()}};
+})();
+const h=s=>{let a=5381,b=52711;for(const c of s){a=(a*33)^c.charCodeAt(0);b=(b*31+c.charCodeAt(0))|0}return (a>>>0).toString(36)+(b>>>0).toString(36)};
+db.users=db.users||[{u:'admin',p:h('admin123'),role:'admin',name:'مدیر سامانه'},{u:'user',p:h('user123'),role:'user',name:'کاربر'}];
+db.params=db.params||[{k:'wid',label:'عرض نوار',unit:'mm'},{k:'len',label:'طول',unit:'متر'}];
+const DRF=[{k:'cv',label:'نوار نقاله',type:'cv',req:1,on:1},{k:'fd',label:'تاریخ وقوع خرابی',type:'date',req:1,on:1},{k:'ft',label:'ساعت وقوع خرابی',type:'time',on:1},{k:'sd',label:'تاریخ شروع تعمیر',type:'date',on:1},{k:'st',label:'ساعت شروع تعمیر',type:'time',on:1},{k:'ed',label:'تاریخ پایان تعمیر',type:'date',on:1},{k:'et',label:'ساعت پایان تعمیر',type:'time',on:1},{k:'type',label:'نوع خرابی',type:'cat',on:1},{k:'kind',label:'نوع توقف',type:'select',opts:['اضطراری','برنامه‌ریزی‌شده'],on:1},{k:'part',label:'قطعه معیوب / تعویض‌شده',type:'text',on:1},{k:'qty',label:'تعداد قطعات مصرفی',type:'number',on:1},{k:'cause',label:'علت خرابی',type:'text',on:1},{k:'tech',label:'نام تعمیرکار',type:'text',on:1},{k:'sup',label:'نام سرپرست',type:'text',on:1},{k:'cost',label:'هزینه تعمیر (تومان)',type:'number',on:1},{k:'status',label:'وضعیت نهایی',type:'select',opts:['انجام شد','در حال انجام','منتظر قطعه'],req:1,on:1},{k:'desc',label:'شرح مشکل و اقدامات انجام‌شده',type:'textarea',on:1}];
+db.cols=db.cols||{cv:[],rl:[]};db.cols.cv=db.cols.cv||[];db.cols.rl=db.cols.rl||[];
+const CPO={};
+function colPanel(t,cols,re){const hid=db.cols[t]||[];
+return `<button class="b s np" style="margin:0 0 8px" onclick="CPO['${t}']=!CPO['${t}'];${re}()">🗂 ستون‌ها (${fa(cols.length-hid.filter(k=>cols.some(c=>c[0]==k)).length)}/${fa(cols.length)})</button>`+(CPO[t]?`<div class="np" style="background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:8px 10px;margin:0 0 10px"><b style="font-size:12px">ستون‌هایی که می‌خواهید نمایش داده شوند:</b><div>${cols.map(c=>`<label style="display:inline-block;margin:6px 0 0 14px;color:var(--tx);font-size:13px"><input type="checkbox" style="width:auto" ${hid.includes(c[0])?'':'checked'} onchange="colTg('${t}','${c[0]}');${re}()"> ${esc(c[1])}</label>`).join('')}</div><button class="b s" style="padding:4px 10px" onclick="db.cols['${t}']=[];save();${re}()">نمایش همه</button></div>`:'')}
+function colTg(t,k){const a=db.cols[t]=db.cols[t]||[];const i=a.indexOf(k);if(i<0)a.push(k);else a.splice(i,1);save()}
+db.log=db.log||[];db.rf=db.rf||DRF;if(!db.m1){db.m1=1;[{k:'what',label:'تعویض',type:'text',on:1},{k:'apt',label:'اپارات',type:'select',opts:['سرد','گرم'],on:1}].forEach(f=>{if(!db.rf.some(x=>x.k==f.k))db.rf.push(f)})}db.zones=db.zones||[];if(db.brand==null||db.brand=='BIS CO.')db.brand='';db.params.forEach(p=>p.type=p.type||'text');db.cv.forEach(c=>c.p=c.p||{});
+function loadSeed(){let c=0;const add=(n,l,w)=>{if(db.cv.some(x=>x.name==n))return;let k=db.cv.length+1,code;do code='CV-'+String(k++).padStart(3,'0');while(db.cv.some(x=>x.code==code));db.cv.push({code,name:n,loc:'',status:'فعال',zone:'',p:{wid:w,len:l}});c++};
+[['P1',200,1000],['P2',350,1000],['P3',350,1000],['M1',20,1000],['2M',300,1000],['3M',50,1000],['M4',50,1000],['1G',50,1000],['2G',300,1000],['3G',50,1000],['4G',50,1000],['1XH',20,2000],['2XH',200,1000],['3XH',30,1000],['1H',220,1000],['1Q',20,1000],['2Q',20,1000],['3Q',20,1000],['4Q',20,1000],['5Q',20,1000],['6Q',20,1000],['8Q',250,1400],['9Q',200,1000],['10Q',100,1000],['S1',100,800],['S2',100,800],['S3',20,4700],['S4',100,800],['S5',200,800],['واحد بلت',20,4700]].forEach(x=>add(...x));
+for(let i=1;i<=9;i++)add('F'+i,200,650);
+for(let i=1;i<=6;i++)add('ویبره فیدر دیسک '+i,20,1000);
+[['c6',17,1000],['c5',300,1000],['C1',150,1000],['C2',250,1000],['C3',100,1000],['C4',1500,1000],['ویبره فیدر HPGR',20,1400],['ویبره فیدر بالمینگ',20,650]].forEach(x=>add(...x));
+for(let i=1;i<=17;i++)add('ویبره فیدر '+i+' bin',i<11?10:15,i>=7&&i<=10?1200:1000)
+return c}
+if(!db.cv.length&&!db.rp.length){loadSeed();save()}
+let me=(()=>{try{const s=JSON.parse(SS.g('cvme'));return db.users.find(v=>v.u==s.u&&v.p==s.p)||null}catch(e){return null}})();
+const lg=a=>{db.log.push({u:me.u,act:a,at:Date.now()});db.log=db.log.slice(-200)};
+
+const $=s=>document.querySelector(s),esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sum=(l,f)=>l.reduce((a,r)=>a+(+f(r)||0),0);
+const IND0=[['fail','تعداد خرابی',l=>l.length],['rep','تعداد تعمیرات انجام‌شده',l=>l.filter(r=>r.status=='انجام شد').length],['down','ساعات توقف',l=>sum(l,r=>r.down)],['cost','هزینه تعمیرات (تومان)',l=>sum(l,r=>r.cost)],['parts','تعداد قطعات مصرفی',l=>sum(l,r=>r.qty)]];
+const years=()=>[...new Set([CY,CY-1,...db.rp.map(r=>r.jy)])].sort((a,b)=>b-a);
+const cvName=c=>{const x=db.cv.find(v=>v.code==c);return x?x.code+' - '+x.name:c};
+// ---------- ناوبری ----------
+const TABS=[['dash','داشبورد'],['cv','نوار نقاله‌ها'],['rp','ثبت تعمیر'],['rep','گزارش‌ها'],['set','تنظیمات و پشتیبان']];
+let tab='dash',R={cv:'all',y:CY,m:CM,ind:'fail',ys:[CY,CY-1]};
+function go(t){if(t=='set'&&!isA())t='dash';tab=t;$('#nav').innerHTML=TABS.filter(x=>x[0]!='set'||isA()).map(x=>`<button class="${x[0]==(t=='cvd'?'cv':t)?'on':''}" onclick="go('${x[0]}')">${x[1]}</button>`).join('');$('#app').innerHTML=({dash,cv:cvPage,rp:rpPage,rep,set:setPage,cvd:cvDetail})[t]();if(t=='cv')list()}
+// ---------- نمودار ----------
+const COL=['#94a3b8','#f59e0b','#2563eb','#16a34a','#dc2626'];
+function chart(S){const W=720,H=260,p=20,gw=(W-2*p)/12,bw=gw/(S.length+1),mx=Math.max(1,...S.flatMap(s=>s.v));let o=`<svg viewBox="0 0 ${W} ${H}" style="width:100%">`;
+for(let i=0;i<12;i++){const x0=W-p-(i+1)*gw;S.forEach((s,k)=>{const h=s.v[i]/mx*(H-60);o+=`<rect x="${x0+bw/2+(S.length-1-k)*bw}" y="${H-30-h}" width="${bw-1}" height="${h}" fill="${s.c}"><title>${s.n} ${MN[i]}: ${fa(s.v[i])}</title></rect>`});
+o+=`<text x="${x0+gw/2}" y="${H-12}" font-size="10" text-anchor="middle" fill="currentColor">${MN[i]}</text>`}
+return o+'</svg><div class="lg">'+S.map(s=>`<span><i style="background:${s.c}"></i>${s.n}</span>`).join('')+'</div>'}
+const series=(l,ys,f)=>ys.map((y,i)=>({n:fa(y).replace(/٬/g,''),c:COL[i%5],v:MN.map((_,m)=>f(l.filter(r=>r.jy==y&&r.jm==m+1)))}));
+// ---------- داشبورد ----------
+function dash(){const m=db.rp.filter(r=>r.jy==CY&&r.jm==CM),n=db.cv.length,act=db.cv.filter(c=>c.status=='فعال').length,pc=n?Math.round(act/n*100):0,hd=sum(m,r=>r.down),
+fc=new Set(m.map(r=>r.cv)).size,av=n?Math.max(0,Math.round((1-hd/(Math.max(1,TJ[2])*24*n))*100)):100,
+zs=[...db.zones,...(!db.zones.length||db.cv.some(c=>inZone(c,'_'))?[{k:'_',name:db.zones.length?'سایر بخش‌ها':'همه نوارها',sub:db.zones.length?'نوارهای بدون بخش':'بخش‌ها را از تنظیمات تعریف کنید',color:'#f97316',icon:'⚙️'}]:[])],
+ring=(p,c,i,v,l)=>`<div class="rg"><div class="ring" style="--p:${p};--c:${c}"><span>${i}</span></div><b>${v}</b><small>${l}</small></div>`,
+k=(a,b)=>`<div class="kpi"><span>${a}</span><b>${b}</b></div>`;
+const H0=db.hero||{},A=isA();
+return `<div class="top"><button class="menub" onclick="go('${A?'set':'rep'}')">☰<i></i></button>
+<div class="hero"><div class="himg" ${H0.img?`style="background-image:url(${H0.img})"`:''}>${H0.img?'':HSVG}</div>
+${A?`<div class="hbt"><button onclick="heroImg()">📷</button><button onclick="heroEdit()">✏️</button></div>`:''}
+<div class="hbody"><div class="hd"><i></i><i></i><i></i></div><div class="hlab">${esc(H0.label||'مکانیک')}</div><h2>${esc(H0.title||'مدیریت نوار نقاله‌های سایت')}</h2><p>${esc(H0.sub||'نظارت هوشمند، بهره‌وری بیشتر')}</p><div class="hbar"></div><button class="b" onclick="go('rep')">${esc(H0.btn||'گزارش‌ها')} ›</button></div></div></div>
+<div class="sr"><span>🔍</span><input placeholder="جستجو در نوارها و مناطق ..." onkeydown="if(event.key=='Enter'){SQ=this.value;ZF=null;go('cv')}"></div>
+<div class="zg">${A?`<div class="za0" onclick="zQuick()"><i>＋</i>افزودن منطقه</div>`:''}${zs.map(z=>{const l=db.cv.filter(c=>inZone(c,z.k)),f=m.filter(r=>l.some(c=>c.code==r.cv)).length,ix=db.zones.findIndex(q=>q.k==z.k);return `<div class="zc" style="--c:${z.color}" onclick="ZF='${z.k}';go('cv')"><div class="zi" ${z.img?`style="background-image:url(${z.img})"`:''}>${z.img?'':z.icon}</div>${A&&ix>=0?`<div class="zt" onclick="event.stopPropagation()"><button onclick="ZF='${z.k}';go('cv')">📋</button><button onclick="zDel(${ix});go('dash')">🗑️</button><button onclick="zEd(${ix})">✏️</button><button onclick="zImg(${ix})">📷</button></div>`:''}<b>${esc(z.name)}</b><span>${esc(z.sub)}</span><small>${fa(l.length)} نوار · ${fa(f)} خرابی این ماه</small><i class="zar">›</i></div>`}).join('')}</div>
+<div class="card"><b>📊 خلاصه اطلاعات (${MN[CM-1]})</b><div class="rings">${ring(pc,'#16a34a','💚',fa(pc)+'٪','نوارهای فعال')}${ring(100,'#2563eb','⚙️',fa(n),'تعداد نوارها')}${ring(n?Math.round(fc/n*100):0,'#f97316','⚠️',fa(m.length),'خرابی ماه')}${ring(av,'#7c3aed','⏱️',fa(hd),'ساعت توقف')}</div></div>
+<div class="grid">${k('تعمیرات انجام‌شده',fa(m.filter(r=>r.status=='انجام شد').length))}${k('در حال انجام',fa(db.rp.filter(r=>r.status!='انجام شد').length))}${k('هزینه ماه جاری',fa(sum(m,r=>r.cost)))}</div>
+<div class="card" style="margin-top:12px"><b>تعداد خرابی ماهانه: امسال در مقابل سال قبل</b>${db.rp.length?chart(series(db.rp,[CY-1,CY],inds()[0][2])):'<div class="empty">هنوز تعمیری ثبت نشده است.</div>'}</div>`}
+
+const HSVG=`<svg viewBox="0 0 400 230" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#cfe0ff"/><stop offset="1" stop-color="#7da4ee"/></linearGradient><linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a4a66"/><stop offset="1" stop-color="#1b2540"/></linearGradient></defs><rect width="400" height="230" fill="url(#g1)"/><g transform="rotate(-14 200 130)"><rect x="-20" y="120" width="460" height="34" rx="17" fill="url(#g2)"/>${[0,1,2,3,4,5,6,7,8,9,10,11].map(i=>`<circle cx="${i*40}" cy="137" r="9" fill="#9fb3d8"/>`).join('')}<rect x="-20" y="150" width="460" height="6" fill="#0f172a55"/>${[0,1,2,3,4,5,6,7].map(i=>`<rect x="${20+i*55}" y="${100-(i%3)*6}" width="40" height="22" rx="6" fill="#f59e0b"/>`).join('')}</g><g fill="#1e3a8a"><rect x="40" y="170" width="8" height="60"/><rect x="190" y="170" width="8" height="60"/><rect x="340" y="170" width="8" height="60"/></g></svg>`;
+function pickImg(cb){const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=()=>{const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',.8))};im.src=r.result};r.readAsDataURL(f)};i.click()}
+function heroImg(){pickImg(u=>{db.hero=db.hero||{};db.hero.img=u;lg('تغییر عکس بنر');save();go('dash')})}
+function heroEdit(){const h=db.hero=db.hero||{},t=(q,k,d)=>{const v=prompt(q,h[k]||d);if(v!==null)h[k]=v.trim()};t('عنوان کوچک بالای تیتر','label','مکانیک');t('تیتر اصلی','title','مدیریت نوار نقاله‌های سایت');t('زیرعنوان','sub','نظارت هوشمند، بهره‌وری بیشتر');t('متن دکمه','btn','گزارش‌ها');lg('ویرایش بنر');save();go('dash')}
+function zQuick(){const n=prompt('نام منطقه جدید:');if(!n||!n.trim())return;db.zones.push({k:'z'+Date.now(),name:n.trim(),sub:prompt('توضیح کوتاه (اختیاری):')||'',color:ZC[db.zones.length%ZC.length][0],icon:ZI[db.zones.length%ZI.length]});lg('افزودن بخش '+n);save();go('dash')}
+function zEd(i){const z=db.zones[i],n=prompt('نام منطقه',z.name);if(n===null)return;z.name=n.trim()||z.name;const t=prompt('توضیح',z.sub||'');if(t!==null)z.sub=t.trim();lg('ویرایش بخش');save();go('dash')}
+function zImg(i){pickImg(u=>{db.zones[i].img=u;lg('تغییر عکس بخش');save();go('dash')})}
+let ZF=null,SQ='';
+const inZone=(c,k)=>k=='_'?!db.zones.some(z=>z.k==c.zone):c.zone==k;
+const zname=k=>k=='_'?'همه / سایر':(db.zones.find(z=>z.k==k)||{}).name;
+const ZC=[['#2563eb','آبی'],['#16a34a','سبز'],['#7c3aed','بنفش'],['#f97316','نارنجی'],['#dc2626','قرمز'],['#0891b2','فیروزه‌ای']],ZI=['💧','🌀','❄️','⚙️','🏭','⛏️','📦','🔧'];
+const zo=(a,v)=>a.map(x=>{const o=Array.isArray(x)?x:[x,x];return `<option value="${o[0]}" ${o[0]==v?'selected':''}>${o[1]}</option>`}).join('');
+function zSet(i,k,v){db.zones[i][k]=v;lg('ویرایش بخش');save()}
+function zAdd(){const n=$('#zn_n').value.trim();if(!n)return alert('نام بخش الزامی است.');db.zones.push({k:'z'+Date.now(),name:n,sub:$('#zn_s').value.trim(),color:$('#zn_c').value,icon:$('#zn_i').value});lg('افزودن بخش '+n);save();go('set')}
+function zDel(i){if(confirm('بخش حذف شود؟ نوارهای آن بدون بخش می‌شوند.')){lg('حذف بخش '+db.zones[i].name);db.zones.splice(i,1);save();go('set')}}
+// ---------- نوار نقاله‌ها ----------
+const isA=()=>!!(me&&me.role=='admin');
+let ed=null,QE=false,CVD=null,PRE=null,D={y:CY,ind:'fail',ys:[CY,CY-1]};
+function cvPage(){const E=(ed&&db.cv.find(c=>c.code==ed))||{p:{}};
+return (isA()?`<div class="card"><b>${ed?'ویرایش '+esc(ed):'افزودن نوار نقاله'}</b><div class="f">
+<div><label>کد نوار (قابل ویرایش)</label><input id="c_code" value="${esc(E.code)}"></div>
+<div><label>نام</label><input id="c_name" value="${esc(E.name)}"></div>
+<div><label>محل / واحد</label><input id="c_loc" value="${esc(E.loc)}"></div>
+<div><label>وضعیت</label><select id="c_status"><option ${E.status=='متوقف'?'':'selected'}>فعال</option><option ${E.status=='متوقف'?'selected':''}>متوقف</option></select></div>
+<div><label>بخش</label><select id="c_zone"><option value="">—</option>${db.zones.map(z=>`<option value="${z.k}" ${E.zone==z.k?'selected':''}>${esc(z.name)}</option>`).join('')}</select></div>
+${db.params.map(p=>`<div><label>${esc(p.label)}${p.unit?' ('+esc(p.unit)+')':''}</label>${inp('p_'+p.k,p,E.p[p.k])}</div>`).join('')}</div>
+<button class="b" onclick="addCv()">${ed?'ذخیره تغییرات':'ذخیره نوار'}</button>${ed?'<button class="b s" onclick="ed=null;go(\'cv\')">انصراف</button>':''}</div>`:'')
++`<div class="card"><input id="q" placeholder="جست‌وجو بر اساس کد یا نام..." oninput="list()"><div class="tw" id="cvl"></div></div>`+(isA()?pmCard():'')}
+function list(){if(SQ){$('#q').value=SQ;SQ=''}const q=$('#q').value.trim().toLowerCase(),A=isA(),E=A&&QE,l=db.cv.filter(c=>(c.code+c.name).toLowerCase().includes(q)&&(!ZF||inZone(c,ZF)));
+const t=(c,k)=>`<input value="${esc(c[k])}" onchange="cvF('${c.code}','${k}',this.value)">`,
+pc=(c,p)=>{const v=c.p[p.k];return E?(p.type=='date'?`<input readonly placeholder="تاریخ" value="${esc(v)}" onclick="dp(this)" onchange="cvP('${c.code}','${p.k}',this.value)">`:`<input ${p.type=='number'?'type="number" step="any" ':''}value="${esc(v)}" onchange="cvP('${c.code}','${p.k}',this.value)">`):esc(v)},
+zn=c=>esc((db.zones.find(z=>z.k==c.zone)||{}).name||'');
+const hid=db.cols.cv||[],
+CL=[['code','کد',c=>E?`<input style="min-width:80px" value="${esc(c.code)}" onchange="cvRen('${c.code}',this.value)">`:esc(c.code)],
+['name','نام',c=>E?t(c,'name'):`<a href="#" style="font-weight:bold;text-decoration:none" onclick="openCv('${c.code}');return false">${esc(c.name)}</a>`],
+['loc','محل',c=>E?t(c,'loc'):esc(c.loc)],
+['zone','بخش',c=>E?`<select onchange="cvF('${c.code}','zone',this.value)"><option value="">—</option>${db.zones.map(z=>`<option value="${z.k}" ${c.zone==z.k?'selected':''}>${esc(z.name)}</option>`).join('')}</select>`:zn(c)],
+...db.params.map(p=>['p:'+p.k,p.label+(p.unit?' ('+p.unit+')':''),c=>pc(c,p)]),
+['status','وضعیت',c=>E?`<select onchange="cvF('${c.code}','status',this.value)"><option ${c.status=='متوقف'?'':'selected'}>فعال</option><option ${c.status=='متوقف'?'selected':''}>متوقف</option></select>`:`<span class="tag" style="background:${c.status=='فعال'?'var(--ok)':'var(--bad)'}">${c.status}</span>`],
+['cnt','خرابی‌ها',c=>fa(db.rp.filter(r=>r.cv==c.code).length)]],
+VC=CL.filter(x=>!hid.includes(x[0])),
+act=c=>`<td><button class="b" style="margin:0;padding:4px 10px" onclick="openCv('${c.code}')">📊 تعمیرات</button> <button class="b s" style="margin:0;padding:4px 10px" onclick="R.cv='${c.code}';go('rep')">گزارش</button>${A?` <button class="b" style="margin:0;padding:4px 10px" onclick="editCv('${c.code}')">ویرایش</button> <button class="b d" onclick="delCv('${c.code}')">حذف</button>`:''}</td>`;
+$('#cvl').innerHTML=(A?`<button class="b ${E?'':'s'}" style="margin:0 0 8px" onclick="QE=!QE;list()">${E?'✔ پایان ویرایش سریع':'✏️ ویرایش سریع همه نوارها'}</button> `:'')+colPanel('cv',CL,'list')+(ZF?`<p>بخش: <b>${esc(zname(ZF))}</b> <a href="#" onclick="ZF=null;list();return false">✕ حذف فیلتر</a></p>`:'')+(l.length?`<table><tr>${VC.map(x=>`<th>${esc(x[1])}</th>`).join('')}<th></th></tr>${l.map(c=>`<tr>${VC.map(x=>`<td>${x[2](c)}</td>`).join('')}${act(c)}</tr>`).join('')}</table>`:'<div class="empty">نواری ثبت نشده است.</div>')}
+function addCv(){const o={code:cvSan($('#c_code').value),name:$('#c_name').value.trim(),loc:$('#c_loc').value.trim(),status:$('#c_status').value,zone:$('#c_zone').value,p:{}};
+db.params.forEach(p=>o.p[p.k]=$('#p_'+p.k).value.trim());
+if(!o.code||!o.name)return alert('کد و نام الزامی است.');
+if(ed){if(o.code!=ed){if(db.cv.some(c=>c.code==o.code))return alert('این کد قبلاً ثبت شده است.');renCode(ed,o.code)}Object.assign(db.cv.find(c=>c.code==o.code),o);lg('ویرایش نوار '+o.code);ed=null}
+else{if(db.cv.some(c=>c.code==o.code))return alert('این کد قبلاً ثبت شده است.');db.cv.push(o);lg('افزودن نوار '+o.code)}
+save();go('cv')}
+function editCv(c){ed=c;go('cv');scrollTo(0,0)}
+function delCv(c){if(db.rp.some(r=>r.cv==c))return alert('این نوار سابقه تعمیر دارد و قابل حذف نیست.');if(confirm('حذف شود؟')){db.cv=db.cv.filter(x=>x.code!=c);lg('حذف نوار '+c);save();go('cv')}}
+
+// ---------- ثبت تعمیر ----------
+// ---------- کد و پارامترهای نوار (ویرایش) ----------
+const cvSan=s=>String(s||'').trim().toUpperCase().replace(/[^A-Z0-9_\-\u0600-\u06FF]/g,'');
+function renCode(o,n){const c=db.cv.find(v=>v.code==o);c.code=n;db.rp.forEach(r=>{if(r.cv==o)r.cv=n;if(r.x&&r.x.cv==o)r.x.cv=n});if(R.cv==o)R.cv=n;if(CVD==o)CVD=n;if(ed==o)ed=n;lg('تغییر کد نوار '+o+' به '+n)}
+function cvRen(o,v){const n=cvSan(v);if(!n){alert('کد نمی‌تواند خالی باشد.');return list()}if(n==o)return list();if(db.cv.some(c=>c.code==n)){alert('این کد قبلاً ثبت شده است.');return list()}renCode(o,n);save();list()}
+function cvF(c,k,v){const x=db.cv.find(q=>q.code==c);if(!x)return;x[k]=String(v).trim();lg('ویرایش نوار '+c);save()}
+function cvP(c,k,v){const x=db.cv.find(q=>q.code==c);if(!x)return;x.p[k]=String(v).trim();lg('ویرایش نوار '+c);save()}
+function pMv(i,d){const j=i+d;if(j<0||j>=db.params.length)return;[db.params[i],db.params[j]]=[db.params[j],db.params[i]];save();go('cv')}
+function pmCard(){return `<div class="card"><b>پارامترهای نوار نقاله</b><p style="color:var(--mut);font-size:12px">هر پارامتر را تغییر نام دهید، جابه‌جا یا حذف کنید، یا پارامتر جدید بسازید. تغییرات فوراً روی فرم، جدول و صفحه‌ی هر نوار اعمال می‌شود.</p><div class="tw"><table><tr><th>نام</th><th>واحد</th><th>نوع</th><th></th></tr>${db.params.map((p,i)=>`<tr><td><input style="min-width:130px" value="${esc(p.label)}" onchange="pSet(${i},'label',this.value);go('cv')"></td><td><input style="min-width:80px" value="${esc(p.unit)}" onchange="pSet(${i},'unit',this.value);go('cv')"></td><td><select onchange="pSet(${i},'type',this.value);go('cv')">${['text','number','date'].map(t=>`<option value="${t}" ${p.type==t?'selected':''}>${FT[t]}</option>`).join('')}</select></td><td><button class="b s" style="margin:0" onclick="pMv(${i},-1)">↑</button> <button class="b s" style="margin:0" onclick="pMv(${i},1)">↓</button> <button class="b d" onclick="delPm('${p.k}')">✕</button></td></tr>`).join('')}</table></div>
+<div class="f"><div><label>پارامتر جدید</label><input id="pm_l"></div><div><label>واحد (اختیاری)</label><input id="pm_u"></div><div><label>نوع</label><select id="pm_t"><option value="text">متن</option><option value="number">عدد</option><option value="date">تاریخ</option></select></div></div><button class="b" onclick="addPm()">افزودن پارامتر</button></div>`}
+// ---------- صفحه‌ی تعمیرات هر نوار ----------
+function openCv(c){CVD=c;D.y=CY;go('cvd');scrollTo(0,0)}
+function dTg(y){D.ys=D.ys.includes(y)?D.ys.filter(x=>x!=y):[...D.ys,y];go('cvd')}
+const cnt=(l,f)=>{const c={};l.forEach(r=>{const v=String(f(r)||'').trim();if(v)c[v]=(c[v]||0)+1});return Object.entries(c).sort((a,b)=>b[1]-a[1])};
+function hbars(it,col){if(!it.length)return '<div class="empty">داده‌ای ثبت نشده است.</div>';const mx=Math.max(...it.map(i=>i[1]));return it.map(i=>`<div style="display:flex;align-items:center;gap:8px;margin:6px 0"><span style="width:38%;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(i[0])}">${esc(i[0])}</span><div style="flex:1;background:var(--bg);border-radius:6px;height:16px"><div style="width:${i[1]/mx*100}%;height:100%;background:${col};border-radius:6px"></div></div><b style="width:30px;font-size:12px">${fa(i[1])}</b></div>`).join('')}
+function tl(l,y){const W=720,H=100,p=16,n=186+150+jl(y,12),s0=j2ts(y),X=t=>W-p-(t-s0)/864e5/n*(W-2*p);let o=`<svg viewBox="0 0 ${W} ${H}" style="width:100%"><line x1="${p}" x2="${W-p}" y1="62" y2="62" stroke="currentColor" opacity=".3"/>`,a=0;
+for(let m=0;m<12;m++){const d=m<6?31:m<11?30:jl(y,12);o+=`<line x1="${X(s0+a*864e5)}" x2="${X(s0+a*864e5)}" y1="20" y2="66" stroke="currentColor" opacity=".12"/><text x="${X(s0+(a+d/2)*864e5)}" y="84" font-size="10" text-anchor="middle" fill="currentColor">${MN[m]}</text>`;a+=d}
+l.forEach(r=>{const x=X(r.fts);o+=`<line x1="${x}" x2="${x}" y1="18" y2="62" stroke="#dc2626" stroke-width="3.5" stroke-linecap="round"><title>${fmtJ(r.fts)} — ${esc(gv(r,'what')||r.part||'')} ${esc(gv(r,'cause')||r.type||'')}</title></line>`});
+if(y==CY){const x=X(Date.now());if(x>p&&x<W-p)o+=`<line x1="${x}" x2="${x}" y1="12" y2="66" stroke="#16a34a" stroke-dasharray="3 3"><title>امروز</title></line>`}
+return o+'</svg>'+(l.length?'':'<div class="empty">تعمیری در این سال ثبت نشده است.</div>')}
+function cvDetail(){const c=db.cv.find(v=>v.code==CVD);if(!c){CVD=null;setTimeout(()=>go('cv'),0);return ''}
+const L=db.rp.filter(r=>r.cv==c.code).sort((a,b)=>a.fts-b.fts),ys=[...new Set([CY,CY-1,...L.map(r=>r.jy)])].sort((a,b)=>b-a),yl=L.filter(r=>r.jy==D.y),last=L[L.length-1],ago=last?Math.max(0,Math.floor((Date.now()-last.fts)/864e5)):null,
+k=(a,b)=>`<div class="kpi"><span>${a}</span><b style="font-size:${String(b).length>12?15:22}px">${b}</b></div>`,A=isA(),yy=fa(D.y).replace(/٬/g,''),
+opt=(a,v)=>a.map(x=>`<option value="${x[0]}" ${x[0]==v?'selected':''}>${x[1]}</option>`).join(''),ci=inds(),ind=ci.find(i=>i[0]==D.ind)||ci[0],z=db.zones.find(q=>q.k==c.zone),
+byD=yl.slice().sort((a,b)=>b.fts-a.fts);
+return `<div class="card"><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button class="b s" style="margin:0" onclick="go('cv')">‹ بازگشت</button><b style="font-size:18px">${esc(c.name)}</b><span class="tag" style="background:var(--pr)">${esc(c.code)}</span><span class="tag" style="background:${c.status=='متوقف'?'var(--bad)':'var(--ok)'}">${esc(c.status)}</span></div>
+<div class="grid" style="margin-top:10px">${c.loc?k('محل / واحد',esc(c.loc)):''}${z?k('بخش',esc(z.name)):''}${db.params.map(p=>k(esc(p.label)+(p.unit?' ('+esc(p.unit)+')':''),esc(c.p[p.k])||'—')).join('')}</div>
+<button class="b" onclick="PRE='${c.code}';go('rp')">➕ ثبت تعمیر جدید برای این نوار</button>${A?`<button class="b s" onclick="editCv('${c.code}')">✏️ ویرایش مشخصات</button>`:''}<button class="b s" onclick="R.cv='${c.code}';go('rep')">گزارش کامل</button></div>
+<div class="card np"><label>سال</label><select onchange="D.y=+this.value;go('cvd')">${opt(ys.map(y=>[y,fa(y).replace(/٬/g,'')]),D.y)}</select></div>
+<div class="grid"><div class="kpi"><span>تعداد تعمیر ${yy}</span><b>${fa(yl.length)}</b></div>${k('کل تعمیرات ثبت‌شده',fa(L.length))}${k('ساعات توقف '+yy,fa(sum(yl,r=>r.down)))}${k('هزینه '+yy,fa(sum(yl,r=>r.cost)))}${k('آخرین تعمیر',last?fmtJ(last.fts):'—')}${k('روز از آخرین تعمیر',ago==null?'—':fa(ago))}</div>
+<div class="card" style="margin-top:12px"><b>نمودار ماهانه: ${esc(ind[1])}</b><div class="np"><label>شاخص</label><select onchange="D.ind=this.value;go('cvd')">${opt(ci.map(i=>[i[0],i[1]]),ind[0])}</select><div class="yrs" style="margin-top:8px">${ys.map(y=>`<label><input type="checkbox" ${D.ys.includes(y)?'checked':''} onchange="dTg(${y})"> ${fa(y).replace(/٬/g,'')}</label>`).join('')}</div></div>${L.length?chart(series(L,D.ys.slice().sort(),ind[2])):'<div class="empty">هنوز تعمیری برای این نوار ثبت نشده است.</div>'}</div>
+<div class="card"><b>خط زمانی تعمیرات ${yy}</b> <span style="color:var(--mut);font-size:12px">(هر خط قرمز = یک تعمیر، خط سبز = امروز)</span>${tl(yl,D.y)}</div>
+<div class="card"><b>چه کارهایی انجام شده (${yy})</b><p style="color:var(--mut);margin:10px 0 0">علت تعمیر</p>${hbars(cnt(yl,r=>gv(r,'cause')||r.type),'#dc2626')}<p style="color:var(--mut);margin:10px 0 0">نوع کار / قطعه تعویضی</p>${hbars(cnt(yl,r=>gv(r,'what')||r.part),'#2563eb')}<p style="color:var(--mut);margin:10px 0 0">نوع اپارات</p>${hbars(cnt(yl,r=>gv(r,'apt')),'#f59e0b')}</div>
+<div class="card"><b>گزارش اقدامات ${yy}</b>${byD.length?byD.map(r=>`<div style="border-right:4px solid var(--pr);padding:6px 10px;margin:8px 0;background:var(--bg);border-radius:6px"><b>${fmtJ(r.fts)}</b> — ${esc(gv(r,'what')||r.part||'تعمیر')} <span style="color:var(--mut)">${esc(gv(r,'cause')||r.type||'')}</span>${gv(r,'apt')?' · اپارات '+esc(gv(r,'apt')):''}${r.down?' · توقف '+fa(r.down)+' ساعت':''}${gv(r,'desc')?`<div style="margin-top:4px;white-space:pre-wrap">${esc(gv(r,'desc'))}</div>`:''}</div>`).join(''):'<div class="empty">تعمیری در این سال ثبت نشده است.</div>'}</div>
+<div class="card"><b>جدول تعمیرات ${yy}</b><div class="tw">${rpTable(byD,A)}</div></div>`}
+// ---------- فیلدهای پویا، تقویم شمسی جدولی ----------
+const SYS=['cv','fd','ft','sd','st','ed','et','type','kind','part','qty','cost','status'],SK=['cv','fd','ft','sd','st','ed','et'];
+const FT={text:'متن',number:'عدد',textarea:'متن بلند',date:'تاریخ',time:'ساعت',select:'فهرست انتخابی',cv:'نوار نقاله',cat:'نوع خرابی'};
+const FTN=()=>Object.entries(FT).filter(e=>!['cv','cat'].includes(e[0])).map(e=>`<option value="${e[0]}">${e[1]}</option>`).join('');
+const gv=(r,k)=>r.x&&k in r.x?r.x[k]:r[k];
+const inds=()=>{const f=k=>db.rf.some(x=>x.k==k&&x.on),b=IND0.filter(i=>({fail:1,rep:f('status'),down:f('ed'),cost:f('cost'),parts:f('qty')})[i[0]]);
+return [...b,...db.rf.filter(x=>x.on&&!SYS.includes(x.k)&&x.type=='number').map(x=>[x.k,x.label,l=>sum(l,r=>gv(r,x.k))])]};
+function inp(id,f,v){v=v==null?'':v;const o=a=>a.map(x=>`<option ${x==v?'selected':''}>${esc(x)}</option>`).join('');
+return f.type=='textarea'?`<textarea id="${id}" rows="2">${esc(v)}</textarea>`
+:f.type=='select'?`<select id="${id}">${f.req?'':'<option></option>'}${o(f.opts||[])}</select>`
+:f.type=='cat'?`<select id="${id}">${o(db.cats)}</select>`
+:f.type=='cv'?`<select id="${id}">${db.cv.map(c=>`<option value="${esc(c.code)}" ${c.code==v?'selected':''}>${esc(cvName(c.code))}</option>`).join('')}</select>`
+:f.type=='date'?`<input id="${id}" readonly placeholder="انتخاب تاریخ" onclick="dp(this)" value="${esc(v)}">`
+:f.type=='time'?`<input id="${id}" type="time" value="${esc(v)}">`
+:`<input id="${id}" ${f.type=='number'?'type="number" step="any"':''} value="${esc(v)}">`}
+let DP=null;
+const jl=(y,m)=>m<7?31:m<12?30:(()=>{const g=j2g(y,12,30),t=g2j(g[0],g[1],g[2]);return t[0]==y&&t[1]==12&&t[2]==30?30:29})();
+const p2=n=>String(n).padStart(2,'0'),pd=s=>String(s).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+function dp(el){const m=norm(el.value).match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);DP={el,y:m?+m[1]:TJ[0],m:m?+m[2]:TJ[1]};dpR()}
+function dpR(){let o=document.getElementById('dpo');if(!o){o=document.createElement('div');o.id='dpo';o.className='dpo';o.onclick=e=>{if(e.target==o)dpX()};document.body.appendChild(o)}
+const{y,m,el}=DP,n=jl(y,m),g=j2g(y,m,1),w=(new Date(Date.UTC(g[0],g[1]-1,g[2])).getUTCDay()+1)%7,sel=norm(el.value),c=[];
+for(let i=0;i<w;i++)c.push('');
+for(let d=1;d<=n;d++){const s=y+'/'+p2(m)+'/'+p2(d);c.push(`<button class="dd${sel==s?' on':''}${y==TJ[0]&&m==TJ[1]&&d==TJ[2]?' td':''}" onclick="dpP('${s}')">${fa(d)}</button>`)}
+while(c.length%7)c.push('');let rows='';for(let i=0;i<c.length;i+=7)rows+='<tr>'+c.slice(i,i+7).map(x=>`<td>${x}</td>`).join('')+'</tr>';
+o.innerHTML=`<div class="dpc"><div style="display:flex;gap:6px;align-items:center"><button class="b s" style="margin:0" onclick="dpN(-1)">›</button><select style="flex:1" onchange="DP.m=+this.value;dpR()">${MN.map((x,i)=>`<option value="${i+1}" ${i+1==m?'selected':''}>${x}</option>`).join('')}</select><input type="number" style="width:80px" value="${y}" onchange="DP.y=+this.value||DP.y;dpR()"><button class="b s" style="margin:0" onclick="dpN(1)">‹</button></div>
+<table class="dt"><tr>${'شیدسچپج'.split('').map(x=>`<th>${x}</th>`).join('')}</tr>${rows}</table>
+<button class="b s" onclick="dpP('${TJ[0]}/${p2(TJ[1])}/${p2(TJ[2])}')">امروز</button><button class="b s" onclick="dpP('')">پاک کردن</button><button class="b s" onclick="dpX()">بستن</button></div>`}
+function dpN(d){DP.m+=d;if(DP.m<1){DP.m=12;DP.y--}if(DP.m>12){DP.m=1;DP.y++}dpR()}
+function dpP(s){const e=DP.el;e.value=s?pd(s):'';dpX();e.dispatchEvent(new Event('change'))}
+function dpX(){const o=document.getElementById('dpo');if(o)o.remove()}
+// ---------- ثبت تعمیر (فرم پویا) ----------
+function rpPage(){const pre=PRE;PRE=null;return `<div class="card"><b>ثبت خرابی و تعمیر</b><div class="f">${db.rf.filter(f=>f.on).map(f=>`<div style="${f.type=='textarea'?'grid-column:1/-1':''}"><label>${esc(f.label)}${f.req?' *':''}</label>${inp('r_'+f.k,f,f.k=='cv'?pre:'')}</div>`).join('')}</div><button class="b" onclick="addRp()">ثبت تعمیر</button></div>${fpCard()}`}
+const FPO={o:0};
+function fpCard(){if(!isA())return '';
+return `<div class="card"><b>همه پارامترها</b><p style="color:var(--mut);font-size:12px;margin:4px 0">🗑️ حذف، ✏️ تغییر نام، 👁️ نمایش/پنهان کردن در فرم</p>${db.rf.map((f,i)=>`<div class="rpr" style="${f.on?'':'opacity:.5'}"><span>${esc(f.label)} <small style="color:var(--mut);font-weight:normal">(${FT[f.type]||''})</small></span><span>${f.k=='cv'?'':`<button onclick="fpDel(${i})">🗑️</button>`}<button onclick="fpEd(${i})">✏️</button>${f.k=='cv'?'':`<button onclick="fpTg(${i})">${f.on?'👁️':'🚫'}</button>`}</span></div>`).join('')}
+${FPO.o?`<div style="border:1px solid var(--bd);border-radius:14px;padding:8px 12px;margin-top:8px"><div class="f"><div><label>نام پارامتر جدید</label><input id="fp_l"></div><div><label>نوع</label><select id="fp_t">${FTN()}</select></div><div><label>گزینه‌ها (برای فهرست انتخابی، با ، جدا کنید)</label><input id="fp_o"></div></div><button class="b" onclick="fpAdd()">ذخیره</button><button class="b s" onclick="FPO.o=0;go('rp')">انصراف</button></div>`:`<div class="rda" onclick="FPO.o=1;go('rp')">+ افزودن پارامتر</div>`}</div>`}
+function fpAdd(){const l=$('#fp_l').value.trim(),t=$('#fp_t').value;if(!l)return alert('نام پارامتر الزامی است.');
+db.rf.push({k:'f'+Date.now(),label:l,type:t,on:1,opts:t=='select'?$('#fp_o').value.split(/[،,]/).map(x=>x.trim()).filter(Boolean):undefined});FPO.o=0;lg('افزودن پارامتر '+l);save();go('rp')}
+function fpEd(i){const f=db.rf[i],n=prompt('نام پارامتر',f.label);if(n===null)return;if(n.trim())f.label=n.trim();
+if(f.type=='select'){const o=prompt('گزینه‌ها (با ، جدا کنید)',(f.opts||[]).join('،'));if(o!==null)f.opts=o.split(/[،,]/).map(x=>x.trim()).filter(Boolean)}lg('ویرایش پارامتر '+f.label);save();go('rp')}
+function fpDel(i){const f=db.rf[i];if(!confirm('پارامتر «'+f.label+'» حذف شود؟ (داده‌های قبلی نگه داشته می‌شود)'))return;db.rf.splice(i,1);lg('حذف پارامتر '+f.label);save();go('rp')}
+function fpTg(i){db.rf[i].on=!db.rf[i].on;save();go('rp')}
+function rpTable(l,del){const C=db.rf.filter(f=>f.on&&!SK.includes(f.k)),dn=db.rf.some(f=>f.on&&f.k=='ed');
+return l.length?`<table><tr><th>نوار</th><th>تاریخ</th>${C.map(f=>`<th>${esc(f.label)}</th>`).join('')}${dn?'<th>توقف (ساعت)</th>':''}${del?'<th></th>':''}</tr>${l.map(r=>`<tr><td>${esc(r.cv)}</td><td>${fmtJ(r.fts)}</td>${C.map(f=>{const v=gv(r,f.k);return `<td title="${esc(v)}">${f.type=='number'?fa(v||0):esc(v)}</td>`}).join('')}${dn?`<td>${fa(r.down||0)}</td>`:''}${del?`<td><button class="b d" onclick="delRp(${r.id})">حذف</button></td>`:''}</tr>`).join('')}</table>`:'<div class="empty">موردی وجود ندارد.</div>'}
+function addRp(){const x={};
+for(const f of db.rf.filter(f=>f.on)){const v=($('#r_'+f.k).value||'').trim();if(f.req&&!v)return alert('فیلد «'+f.label+'» الزامی است.');x[f.k]=f.type=='number'?(v===''?'':+v):v}
+const cv=x.cv;if(!cv)return alert('ابتدا یک نوار نقاله ثبت کنید.');
+const T=(d,t)=>{if(!x[d])return null;const v=toTs(x[d],x[t]||'00:00');if(!v)throw d;return v};let fts,sts,ets;
+try{fts=T('fd','ft');sts=T('sd','st');ets=T('ed','et')}catch(e){return alert('تاریخ «'+db.rf.find(f=>f.k==e).label+'» نامعتبر است.')}
+const hasF=!!fts;fts=fts||Date.now();if(ets&&ets<fts)return alert('پایان تعمیر قبل از وقوع خرابی است.');
+if(hasF&&db.rp.some(r=>r.cv==cv&&r.fts==fts))return alert('رکورد تکراری: برای این نوار در همین زمان خرابی ثبت شده است.');
+const d=new Date(fts),j=g2j(d.getUTCFullYear(),d.getUTCMonth()+1,d.getUTCDate());
+db.rp.push({id:Date.now(),cv,fts,sts,ets,jy:j[0],jm:j[1],x,type:x.type||'',kind:x.kind||'',part:x.part||'',qty:+x.qty||0,cost:+x.cost||0,status:x.status||'انجام شد',down:ets?(ets-fts)/36e5:0,rt:sts&&ets?(ets-sts)/36e5:0,by:me.name||me.u,at:Date.now()});
+lg('ثبت تعمیر '+cv);save();go('rp')}
+
+// ---------- تعمیرات (فهرست کامل) ----------
+let RL={q:'',y:'all',a:'all'};
+const cvNm=c=>{const x=db.cv.find(v=>v.code==c);return x?x.name:c};
+function rlRows(){const q=RL.q.trim().toLowerCase();return db.rp.filter(r=>r.x&&('what' in r.x||'apt' in r.x||r.src)||true).filter(r=>(RL.y=='all'||r.jy==RL.y)&&(RL.a=='all'||gv(r,'apt')==RL.a)&&(!q||[cvNm(r.cv),gv(r,'what'),gv(r,'cause'),gv(r,'part'),gv(r,'desc')].join(' ').toLowerCase().includes(q))).sort((a,b)=>a.fts-b.fts)}
+function rlT(){const l=rlRows(),A=isA(),c=a=>l.filter(r=>gv(r,'apt')==a).length;
+$('#rlk').innerHTML=`<div class="kpi"><span>تعداد تعمیرات</span><b>${fa(l.length)}</b></div><div class="kpi"><span>اپارات سرد</span><b>${fa(c('سرد'))}</b></div><div class="kpi"><span>اپارات گرم</span><b>${fa(c('گرم'))}</b></div><div class="kpi"><span>پارگی / سوختگی / فرسودگی</span><b style="font-size:15px">${['پارگی','سوختگی','فرسودگی'].map(k=>fa(l.filter(r=>String(gv(r,'cause')||'').includes(k)).length)).join(' / ')}</b></div>`;
+const RC=RCOLS();
+$('#rlcp').innerHTML=rcPanel();
+$('#rlt').innerHTML=l.length?`<table><tr>${RC.map(c=>`<th>${esc(c.label)}</th>`).join('')}${A?'<th></th>':''}</tr>${l.map((r,i)=>`<tr>${RC.map(c=>RBI[c.k]?RBI[c.k](r,i):`<td>${A?`<input value="${esc(gv(r,c.k))}" onchange="rcV(${r.id},'${c.k}',this.value)">`:esc(gv(r,c.k))}</td>`).join('')}${A?`<td><button class="b d" onclick="delRp(${r.id})">حذف</button></td>`:''}</tr>`).join('')}</table>`:'<div class="empty">موردی وجود ندارد.</div>'}
+const RBI={no:(r,i)=>`<td>${fa(i+1)}</td>`,
+name:r=>{const ok=db.cv.some(v=>v.code==r.cv);return `<td>${esc(cvNm(r.cv))}${ok?'':' <span class="tag" style="background:var(--warn)" title="این نام در فهرست نوار نقاله‌ها نیست">؟</span>'}</td>`},
+what:r=>`<td>${esc(gv(r,'what')||gv(r,'part'))}</td>`,date:r=>`<td>${fmtJ(r.fts)}</td>`,apt:r=>`<td>${esc(gv(r,'apt'))}</td>`,
+cause:r=>{const d=gv(r,'desc');return `<td title="${esc(d)}">${esc(gv(r,'cause'))}${d?' ⚠':''}</td>`}};
+const RDEF=[['no','ردیف'],['name','اسم خط'],['what','تعویض'],['date','تاریخ'],['apt','اپارات'],['cause','علت تعویض']];
+const RCOLS=()=>db.rcols=db.rcols||RDEF.map(x=>({k:x[0],label:x[1]}));
+const RPO={o:0};
+function rcPanel(){if(!isA())return '';const C=RCOLS(),miss=RDEF.filter(d=>!C.some(c=>c.k==d[0]));
+return `<button class="b s np" style="margin:0 0 8px" onclick="RPO.o=!RPO.o;rlT()">🗂 ستون‌ها (${fa(C.length)})</button>`+(RPO.o?`<div class="np" style="border:1px solid var(--bd);border-radius:18px;padding:10px 14px;margin-bottom:10px"><b>همه ستون‌ها</b>${C.map((c,i)=>`<div class="rpr"><span>${esc(c.label)}</span><span><button onclick="rcDel(${i})">🗑️</button><button onclick="rcEd(${i})">✏️</button></span></div>`).join('')}${miss.length?`<p style="color:var(--mut);font-size:12px">بازگرداندن ستون حذف‌شده: ${miss.map(d=>`<a href="#" onclick="rcBack('${d[0]}');return false">${d[1]}</a>`).join(' ، ')}</p>`:''}<div class="rda" onclick="rcAdd()">+ افزودن ستون</div></div>`:'')}
+function rcAdd(){const n=(prompt('نام ستون جدید:')||'').trim();if(!n)return;RCOLS().push({k:'c'+Date.now(),label:n});lg('افزودن ستون تعمیرات '+n);save();rlT()}
+function rcEd(i){const c=RCOLS()[i],n=prompt('نام ستون',c.label);if(n===null||!n.trim())return;c.label=n.trim();save();rlT()}
+function rcDel(i){const c=RCOLS()[i];if(!confirm('ستون «'+c.label+'» حذف شود؟ (داده‌های ثبت‌شده نگه داشته می‌شود)'))return;RCOLS().splice(i,1);lg('حذف ستون تعمیرات '+c.label);save();rlT()}
+function rcBack(k){RCOLS().push({k,label:RDEF.find(d=>d[0]==k)[1]});save();rlT()}
+function rcV(id,k,v){const r=db.rp.find(q=>q.id==id);if(!r)return;r.x=r.x||{};r.x[k]=v.trim();save()}
+function rlX(){const l=rlRows(),C=RCOLS(),v={no:(r,i)=>i+1,name:r=>cvNm(r.cv),what:r=>gv(r,'what')||gv(r,'part')||'',date:r=>fmtJ(r.fts),apt:r=>gv(r,'apt')||'',cause:r=>gv(r,'cause')||''};
+csv([C.map(c=>c.label),...l.map((r,i)=>C.map(c=>v[c.k]?v[c.k](r,i):gv(r,c.k)||''))],'repairs-list')}
+function rlBlock(){const ys=years();
+setTimeout(rlT,0);
+return `<div class="card"><b>فهرست تعمیرات</b><div class="f"><div><label>جستجو (نام خط، تعویض، علت)</label><input value="${esc(RL.q)}" oninput="RL.q=this.value;rlT()"></div>
+<div><label>سال</label><select onchange="RL.y=this.value;rlT()"><option value="all">همه</option>${ys.map(y=>`<option value="${y}" ${RL.y==y?'selected':''}>${fa(y).replace(/٬/g,'')}</option>`).join('')}</select></div>
+<div><label>اپارات</label><select onchange="RL.a=this.value;rlT()">${[['all','همه'],['سرد','سرد'],['گرم','گرم']].map(o=>`<option value="${o[0]}" ${RL.a==o[0]?'selected':''}>${o[1]}</option>`).join('')}</select></div></div>
+<button class="b s" onclick="rlX()">خروجی Excel</button><div id="rlcp" style="margin-top:8px"></div></div>
+<div class="grid" id="rlk"></div><div class="card" style="margin-top:12px"><div class="tw" id="rlt"></div></div>`}
+// ---------- ویرایش فیلدها (مدیر) ----------
+function fRows(){return db.rf.map((f,i)=>`<tr><td><input style="min-width:130px" value="${esc(f.label)}" onchange="fSet(${i},'label',this.value)"></td>
+<td>${SYS.includes(f.k)&&f.type!='select'?FT[f.type]:`<select onchange="fSet(${i},'type',this.value);go('set')">${Object.entries(FT).filter(e=>!['cv','cat'].includes(e[0])).map(e=>`<option value="${e[0]}" ${e[0]==f.type?'selected':''}>${e[1]}</option>`).join('')}</select>`}</td>
+<td>${f.type=='select'?`<input style="min-width:130px" value="${esc((f.opts||[]).join('،'))}" placeholder="با ، جدا کنید" onchange="fSet(${i},'opts',this.value.split(/[،,]/).map(x=>x.trim()).filter(Boolean))">`:''}</td>
+<td><input type="checkbox" ${f.req?'checked':''} ${f.k=='cv'?'disabled':''} onchange="fSet(${i},'req',this.checked)"></td>
+<td><input type="checkbox" ${f.on?'checked':''} ${f.k=='cv'?'disabled':''} onchange="fSet(${i},'on',this.checked)"></td>
+<td><button class="b s" style="margin:0" onclick="fMv(${i},-1)">↑</button> <button class="b s" style="margin:0" onclick="fMv(${i},1)">↓</button> ${f.k=='cv'?'':`<button class="b d" onclick="fDel(${i})">✕</button>`}</td></tr>`).join('')}
+function fSet(i,k,v){const f=db.rf[i];f[k]=v;if(k=='type'&&v=='select'&&!f.opts)f.opts=[];lg('ویرایش فیلد '+f.label);save()}
+function fMv(i,d){const j=i+d;if(j<0||j>=db.rf.length)return;[db.rf[i],db.rf[j]]=[db.rf[j],db.rf[i]];save();go('set')}
+function fDel(i){const f=db.rf[i];if(confirm('فیلد «'+f.label+'» از فرم حذف شود؟ (داده‌های قبلی در پایگاه می‌مانند)')){db.rf.splice(i,1);lg('حذف فیلد '+f.label);save();go('set')}}
+function fAdd(){const l=$('#nf_l').value.trim(),t=$('#nf_t').value;if(!l)return alert('عنوان فیلد الزامی است.');
+db.rf.push({k:'f'+Date.now(),label:l,type:t,on:1,opts:t=='select'?$('#nf_o').value.split(/[،,]/).map(x=>x.trim()).filter(Boolean):undefined});lg('افزودن فیلد '+l);save();go('set')}
+function pSet(i,k,v){db.params[i][k]=v;lg('ویرایش پارامتر');save()}
+function expRp(){const C=db.rf.filter(f=>f.on&&!SK.includes(f.k)),yl=db.rp.filter(r=>(R.cv=='all'||r.cv==R.cv)&&r.jy==R.y);
+csv([['نوار','تاریخ',...C.map(f=>f.label),'توقف ساعت'],...yl.map(r=>[r.cv,fmtJ(r.fts),...C.map(f=>gv(r,f.k)),r.down])],'repairs')}
+
+function delRp(id){if(confirm('حذف شود؟')){db.rp=db.rp.filter(r=>r.id!=id);lg('حذف تعمیر');save();go(tab)}}
+// ---------- گزارش‌ها ----------
+const pct=(p,n)=>p==0?(n==0?'—':'فاقد سابقه قابل مقایسه'):(()=>{const v=(n-p)/p*100;return `<span class="${v>0?'up':'dn'}">${fa(Math.abs(v))}٪ ${v>0?'افزایش':v<0?'کاهش':'بدون تغییر'}</span>`})();
+function rep(){const L=db.rp.filter(r=>R.cv=='all'||r.cv==R.cv),yl=L.filter(r=>r.jy==R.y),pl=L.filter(r=>r.jy==R.y-1);
+const opt=(a,v)=>a.map(x=>`<option value="${x[0]}" ${x[0]==v?'selected':''}>${x[1]}</option>`).join('');
+const cur=L.filter(r=>r.jy==R.y&&r.jm==R.m),prv=L.filter(r=>r.jy==R.y-1&&r.jm==R.m);
+const rows=[...inds().map(i=>[i[1],i[2](prv),i[2](cur)]),...db.cats.map(c=>['• '+c,prv.filter(r=>r.type==c).length,cur.filter(r=>r.type==c).length])];
+const pn=[...new Set(L.map(r=>r.part).filter(Boolean))].map(p=>['قطعه: '+p,sum(prv.filter(r=>r.part==p),r=>r.qty||1),sum(cur.filter(r=>r.part==p),r=>r.qty||1)]);
+window._rows=[['شاخص',fa(R.y-1),fa(R.y)],...[...rows,...pn].map(r=>[r[0],r[1],r[2]])];
+const mode=(a,b)=>{const c={};a.forEach(x=>{if(x[b])c[x[b]]=(c[x[b]]||0)+1});const k=Object.keys(c).sort((p,q)=>c[q]-c[p])[0];return k?k+' ('+fa(c[k])+')':'—'};
+const ff=yl.map(r=>r.fts).sort((a,b)=>a-b),gaps=ff.slice(1).map((t,i)=>(t-ff[i])/36e5),mtbf=gaps.length?sum(gaps,x=>x)/gaps.length:null;
+const rts=yl.filter(r=>r.rt>0),mttr=rts.length?sum(rts,r=>r.rt)/rts.length:null;
+const days=R.y==CY?Math.max(1,Math.round((Date.now()-j2ts(R.y))/864e5)):365,nCv=R.cv=='all'?Math.max(1,db.cv.length):1,av=(1-sum(yl,r=>r.down)/(days*24*nCv))*100;
+return rlBlock()+`<div class="card np"><div class="f"><div><label>نوار نقاله</label><select onchange="R.cv=this.value;go('rep')"><option value="all">کل کارخانه</option>${db.cv.map(c=>`<option value="${esc(c.code)}" ${c.code==R.cv?'selected':''}>${esc(cvName(c.code))}</option>`).join('')}</select></div>
+<div><label>سال</label><select onchange="R.y=+this.value;go('rep')">${opt(years().map(y=>[y,fa(y).replace(/٬/g,'')]),R.y)}</select></div>
+<div><label>ماه</label><select onchange="R.m=+this.value;go('rep')">${opt(MN.map((n,i)=>[i+1,n]),R.m)}</select></div></div>
+<button class="b" onclick="print()">چاپ / PDF</button><button class="b s" onclick="csv(window._rows,'compare')">خروجی Excel</button></div>
+<div class="card"><b>گزارش ${MN[R.m-1]} ${fa(R.y).replace(/٬/g,'')} در مقایسه با ${MN[R.m-1]} ${fa(R.y-1).replace(/٬/g,'')} — ${R.cv=='all'?'کل کارخانه':esc(cvName(R.cv))}</b>
+<div class="tw"><table><tr><th>شاخص</th><th>${fa(R.y-1).replace(/٬/g,'')}</th><th>${fa(R.y).replace(/٬/g,'')}</th><th>تغییر</th></tr>${[...rows,...pn].map(r=>`<tr><td>${esc(r[0])}</td><td>${fa(r[1])}</td><td>${fa(r[2])}</td><td>${pct(r[1],r[2])}</td></tr>`).join('')}</table></div></div>
+<div class="card"><b>نمودار ۱۲ ماهه</b><div class="np"><label>شاخص</label><select onchange="R.ind=this.value;go('rep')">${opt(inds().map(i=>[i[0],i[1]]),R.ind)}</select>
+<div class="yrs" style="margin-top:8px">${years().map(y=>`<label><input type="checkbox" ${R.ys.includes(y)?'checked':''} onchange="tg(${y})"> ${fa(y).replace(/٬/g,'')}</label>`).join('')}</div></div>
+${L.length?chart(series(L,R.ys.slice().sort(),(inds().find(i=>i[0]==R.ind)||inds()[0])[2])):'<div class="empty">داده‌ای برای نمایش وجود ندارد.</div>'}</div>
+<div class="card"><b>شاخص‌های عملکرد سال ${fa(R.y).replace(/٬/g,'')}</b><div class="grid" style="margin-top:8px">
+<div class="kpi"><span>خرابی / تعمیر</span><b>${fa(yl.length)}</b></div><div class="kpi"><span>مجموع توقف (ساعت)</span><b>${fa(sum(yl,r=>r.down))}</b></div><div class="kpi"><span>هزینه</span><b>${fa(sum(yl,r=>r.cost))}</b></div>
+<div class="kpi"><span>MTBF (ساعت)</span><b>${mtbf==null?'—':fa(mtbf)}</b></div><div class="kpi"><span>MTTR (ساعت)</span><b>${mttr==null?'—':fa(mttr)}</b></div><div class="kpi"><span>Availability (۲۴ ساعته)</span><b>${yl.length?fa(av)+'٪':'—'}</b></div></div>
+<p>پرتکرارترین خرابی: ${mode(yl,'type')} | بیشترین قطعه: ${mode(yl,'part')} | سال قبل: ${pct(pl.length,yl.length)} (تعداد خرابی)</p></div>
+<div class="card"><b>فهرست تعمیرات سال</b><button class="b s np" onclick="expRp()">Excel</button><div class="tw">${rpTable(yl.sort((a,b)=>a.fts-b.fts))}</div></div>`}
+function j2ts(y){const g=j2g(y,1,1);return Date.UTC(g[0],g[1]-1,g[2])}
+function tg(y){R.ys=R.ys.includes(y)?R.ys.filter(x=>x!=y):[...R.ys,y];go('rep')}
+function csv(rows,name){const t=rows.map(r=>r.map(c=>'"'+String(c??'').replace(/"/g,'""')+'"').join(',')).join('\n'),a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+t],{type:'text/csv'}));a.download=name+'.csv';a.click()}
+// ---------- تنظیمات (فقط مدیر) ----------
+function setPage(){const sp=(t,x)=>`<span class="tag" style="background:var(--pr);margin-left:4px">${t} ${x}</span>`;
+return `<div class="card"><b>فیلدهای فرم ثبت خرابی و تعمیر</b><p style="color:var(--mut);font-size:12px">هر فیلد را تغییر نام دهید، پنهان یا حذف کنید، یا فیلد جدید (مثلاً تاریخ یا ساعت) بسازید. فیلدهای عددی جدید خودکار به شاخص‌های گزارش اضافه می‌شوند.</p><div class="tw"><table><tr><th>عنوان</th><th>نوع</th><th>گزینه‌ها</th><th>اجباری</th><th>نمایش</th><th></th></tr>${fRows()}</table></div>
+<div class="f"><div><label>عنوان فیلد جدید</label><input id="nf_l"></div><div><label>نوع</label><select id="nf_t">${FTN()}</select></div><div><label>گزینه‌ها (برای فهرست انتخابی، با ، جدا کنید)</label><input id="nf_o"></div></div><button class="b" onclick="fAdd()">افزودن فیلد</button></div>
+<div class="card"><b>بخش‌ها (کارت‌های داشبورد) و نام برند</b><label>نام شرکت / برند</label><input value="${esc(db.brand)}" onchange="db.brand=this.value;save();$('#brand').textContent=$('#bf').textContent=db.brand;$('#bsep').style.display=db.brand?'':'none'">
+<div class="tw"><table><tr><th>نام</th><th>توضیح</th><th>رنگ</th><th>آیکن</th><th></th></tr>${db.zones.map((z,i)=>`<tr><td><input style="min-width:110px" value="${esc(z.name)}" onchange="zSet(${i},'name',this.value)"></td><td><input style="min-width:130px" value="${esc(z.sub)}" onchange="zSet(${i},'sub',this.value)"></td><td><select onchange="zSet(${i},'color',this.value)">${zo(ZC,z.color)}</select></td><td><select onchange="zSet(${i},'icon',this.value)">${zo(ZI,z.icon)}</select></td><td><button class="b d" onclick="zDel(${i})">✕</button></td></tr>`).join('')}</table></div>
+<div class="f"><div><label>نام بخش</label><input id="zn_n"></div><div><label>توضیح کوتاه</label><input id="zn_s"></div><div><label>رنگ</label><select id="zn_c">${zo(ZC)}</select></div><div><label>آیکن</label><select id="zn_i">${zo(ZI)}</select></div></div><button class="b" onclick="zAdd()">افزودن بخش</button></div>
+<div class="card"><b>کاربران</b><div class="tw"><table><tr><th>نام</th><th>نام کاربری</th><th>نقش</th><th></th></tr>${db.users.map(u=>`<tr><td>${esc(u.name)}</td><td>${esc(u.u)}</td><td>${u.role=='admin'?'مدیر':'کاربر'}</td><td>${u.u==me.u?'':`<button class="b d" onclick="delUser('${esc(u.u)}')">حذف</button>`}</td></tr>`).join('')}</table></div>
+<div class="f"><div><label>نام</label><input id="u_n"></div><div><label>نام کاربری</label><input id="u_u"></div><div><label>رمز عبور (برای تغییر رمز، دوباره وارد کنید)</label><input id="u_p" type="password"></div>
+<div><label>نقش</label><select id="u_r"><option value="user">کاربر</option><option value="admin">مدیر</option></select></div></div><button class="b" onclick="addUser()">ذخیره کاربر</button></div>
+<div class="card"><b>دسته‌بندی انواع خرابی</b><p>${db.cats.map(c=>sp(esc(c),'')).join('')}</p>
+<input id="nc" placeholder="دسته‌بندی جدید"><button class="b" onclick="const v=$('#nc').value.trim();if(v&&!db.cats.includes(v)){db.cats.push(v);lg('دسته‌بندی '+v);save();go('set')}">افزودن</button></div>
+<div class="card"><b>پشتیبان‌گیری</b><br><button class="b" onclick="const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(db)],{type:'application/json'}));a.download='conveyor-backup.json';a.click()">دانلود نسخه پشتیبان</button>
+<label>بازیابی از فایل</label><input type="file" accept=".json" onchange="const f=this.files[0],r=new FileReader();r.onload=()=>{try{db=JSON.parse(r.result);save();logout()}catch(e){alert('فایل نامعتبر است')}};r.readAsText(f)"></div>
+<div class="card"><b>گزارش تغییرات</b><div class="tw"><table><tr><th>زمان</th><th>کاربر</th><th>عملیات</th></tr>${db.log.slice(-40).reverse().map(l=>`<tr><td>${fmtJ(l.at)} ${new Date(l.at).toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'})}</td><td>${esc(l.u)}</td><td>${esc(l.act)}</td></tr>`).join('')}</table></div></div>`}
+function addPm(){const l=$('#pm_l').value.trim();if(!l)return alert('نام پارامتر الزامی است.');if(db.params.some(p=>p.label==l))return alert('این پارامتر وجود دارد.');
+db.params.push({k:'k'+Date.now(),label:l,unit:$('#pm_u').value.trim(),type:$('#pm_t').value});lg('افزودن پارامتر '+l);save();go('cv')}
+function delPm(k){const p=db.params.find(x=>x.k==k);if(confirm('پارامتر «'+p.label+'» و مقادیر آن برای همه نوارها حذف شود؟')){db.params=db.params.filter(x=>x.k!=k);db.cv.forEach(c=>delete c.p[k]);lg('حذف پارامتر '+p.label);save();go('cv')}}
+function addUser(){const u=$('#u_u').value.trim(),pw=$('#u_p').value,n=$('#u_n').value.trim(),r=$('#u_r').value,x=db.users.find(v=>v.u==u);
+if(!u)return alert('نام کاربری الزامی است.');if(!x&&!pw)return alert('رمز عبور الزامی است.');
+if(x&&x.role=='admin'&&r!='admin'&&db.users.filter(v=>v.role=='admin').length<2)return alert('حداقل یک مدیر باید باقی بماند.');
+if(x){x.name=n||x.name;x.role=r;if(pw)x.p=h(pw)}else db.users.push({u,p:h(pw),role:r,name:n||u});
+me=db.users.find(v=>v.u==me.u);SS.s('cvme',JSON.stringify(me));lg('ذخیره کاربر '+u);save();go('set')}
+function delUser(u){if(confirm('کاربر حذف شود؟')){db.users=db.users.filter(v=>v.u!=u);lg('حذف کاربر '+u);save();go('set')}}
+// ---------- ورود ----------
+function login(){const x=db.users.find(v=>v.u==$('#lu').value.trim()&&v.p==h($('#lp').value));if(!x)return alert('نام کاربری یا رمز اشتباه است.');me=x;SS.s('cvme',JSON.stringify(x));start()}
+function logout(){SS.d('cvme');me=null;start()}
+function start(){$('#brand').textContent=$('#bf').textContent=db.brand;$('#bsep').style.display=db.brand?'':'none';$('#hu').innerHTML=me?`${esc(me.name||me.u)} (${me.role=='admin'?'مدیر':'کاربر'}) <button class="b s" style="padding:3px 10px;margin:0" onclick="logout()">خروج</button>`:'';
+if(!me){$('#nav').innerHTML='';$('#app').innerHTML='<div class="card login"><b>ورود به سامانه</b><label>نام کاربری</label><input id="lu"><label>رمز عبور</label><input id="lp" type="password" onkeydown="if(event.key==\'Enter\')login()"><button class="b" onclick="login()">ورود</button></div>'}else go('dash')}
+start();
+
+</script>
+</body>
+</html>
