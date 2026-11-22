@@ -175,7 +175,8 @@ act=c=>`<td class="ac"><button class="b" style="margin:0;padding:4px 10px" oncli
 const pv=(c,k)=>k=='code'?c.code:k=='name'?c.name:k=='loc'?c.loc:k=='zone'?((db.zones.find(z=>z.k==c.zone)||{}).name||''):k.startsWith('p:')?(c.p[k.slice(2)]||''):k=='status'?c.status:k=='cnt'?db.rp.filter(r=>r.cv==c.code).length:'';
 window._cv=[VC.map(x=>x[1]),...l.map(c=>VC.map(x=>pv(c,x[0])))];
 $('#cvl').innerHTML=`<button class="b np" style="margin:0 0 8px" onclick="cvPdf()">دریافت PDF</button> <button class="b s np" style="margin:0 0 8px" onclick="csv(window._cv,'conveyors')">خروجی Excel</button> `+(A?`<button class="b np ${E?'':'s'}" style="margin:0 0 8px" onclick="QE=!QE;list()">${E?'✔ پایان ویرایش سریع':'✏️ ویرایش سریع همه نوارها'}</button> `:'')+colPanel('cv',CL,'list')+(ZF?`<p>بخش: <b>${esc(zname(ZF))}</b> <a href="#" onclick="ZF=null;list();return false">✕ حذف فیلتر</a></p>`:'')+(l.length?`<table><thead><tr>${VC.map(x=>`<th>${esc(x[1])}</th>`).join('')}<th class="ac"></th></tr></thead><tbody>${l.map(c=>`<tr>${VC.map(x=>`<td>${x[2](c)}</td>`).join('')}${act(c)}</tr>`).join('')}</tbody></table>`:'<div class="empty">نواری ثبت نشده است.</div>')}
-function cvPdf(){QE=false;list();setTimeout(()=>print(),100)}
+function doPrint(){try{if(window.AndroidPrint&&AndroidPrint.print)return AndroidPrint.print()}catch(e){}print()}
+function cvPdf(){QE=false;list();setTimeout(doPrint,100)}
 function addCv(){const o={code:cvSan($('#c_code').value),name:$('#c_name').value.trim(),loc:$('#c_loc').value.trim(),status:$('#c_status').value,zone:$('#c_zone').value,p:{}};
 db.params.forEach(p=>o.p[p.k]=$('#p_'+p.k).value.trim());
 if(!o.code||!o.name)return alert('کد و نام الزامی است.');
@@ -339,7 +340,7 @@ const days=R.y==CY?Math.max(1,Math.round((Date.now()-j2ts(R.y))/864e5)):365,nCv=
 return rlBlock()+`<div class="card np"><div class="f"><div><label>نوار نقاله</label><select onchange="R.cv=this.value;go('rep')"><option value="all">کل کارخانه</option>${db.cv.map(c=>`<option value="${esc(c.code)}" ${c.code==R.cv?'selected':''}>${esc(cvName(c.code))}</option>`).join('')}</select></div>
 <div><label>سال</label><select onchange="R.y=+this.value;go('rep')">${opt(years().map(y=>[y,fa(y).replace(/٬/g,'')]),R.y)}</select></div>
 <div><label>ماه</label><select onchange="R.m=+this.value;go('rep')">${opt(MN.map((n,i)=>[i+1,n]),R.m)}</select></div></div>
-<button class="b" onclick="print()">چاپ / PDF</button><button class="b s" onclick="csv(window._rows,'compare')">خروجی Excel</button></div>
+<button class="b" onclick="doPrint()">چاپ / PDF</button><button class="b s" onclick="csv(window._rows,'compare')">خروجی Excel</button></div>
 <div class="card"><b>گزارش ${MN[R.m-1]} ${fa(R.y).replace(/٬/g,'')} در مقایسه با ${MN[R.m-1]} ${fa(R.y-1).replace(/٬/g,'')} — ${R.cv=='all'?'کل کارخانه':esc(cvName(R.cv))}</b>
 <div class="tw"><table><tr><th>شاخص</th><th>${fa(R.y-1).replace(/٬/g,'')}</th><th>${fa(R.y).replace(/٬/g,'')}</th><th>تغییر</th></tr>${[...rows,...pn].map(r=>`<tr><td>${esc(r[0])}</td><td>${fa(r[1])}</td><td>${fa(r[2])}</td><td>${pct(r[1],r[2])}</td></tr>`).join('')}</table></div></div>
 <div class="card"><b>نمودار ۱۲ ماهه</b><div class="np"><label>شاخص</label><select onchange="R.ind=this.value;go('rep')">${opt(inds().map(i=>[i[0],i[1]]),R.ind)}</select>
@@ -391,7 +392,7 @@ gzL=(y=GZ.y)=>db.gz.filter(e=>e.y==y).sort((a,b)=>(norm(a[gzDK()])||'9').localeC
 gzS=(c,e)=>c.t=='date'?pd(e[c.k]||''):esc(e[c.k]||''),
 gzIn=(c,e,at)=>c.t=='date'?`<input readonly placeholder="تاریخ" value="${esc(pd((e||{})[c.k]||''))}" onclick="dp(this)" ${at}>`:c.t=='apt'?`<select ${at}><option></option>${['سرد','گرم'].map(o=>`<option ${o==(e||{})[c.k]?'selected':''}>${o}</option>`).join('')}</select>`:`<input value="${esc((e||{})[c.k]||'')}" ${at}>`;
 function gzT(){gzI();const A=isA(),L=gzL(),C=db.gzc,E=A&&GZ.e;
-$('#gz').innerHTML=`<div class="card np"><b>گزارش</b><div style="margin:8px 0">${gzYs().map(y=>`<button class="b ${y==GZ.y?'':'s'}" style="margin:0 0 4px 6px" onclick="GZ.y=${y};gzT()">${fy(y)}</button>`).join('')}${A?`<button class="b s" style="margin:0 0 4px 6px" onclick="gzYear()">+ سال جدید</button>`:''}</div>
+$('#gz').innerHTML=`${GZ.all?'<div class="card np"><button class="b" onclick="GZ.all=0;gzT()">✔ بازگشت به نمای عادی (نمایش همه‌ی سال‌ها فعال است)</button></div>':''}<div class="card np"><b>گزارش</b><div style="margin:8px 0">${gzYs().map(y=>`<button class="b ${y==GZ.y?'':'s'}" style="margin:0 0 4px 6px" onclick="GZ.y=${y};gzT()">${fy(y)}</button>`).join('')}${A?`<button class="b s" style="margin:0 0 4px 6px" onclick="gzYear()">+ سال جدید</button>`:''}</div>
 <button class="b" onclick="gzPdf()">PDF سال ${fy(GZ.y)}</button><button class="b" onclick="gzPdfAll()">PDF همه سال‌ها (یکجا)</button><button class="b s" onclick="gzX()">خروجی Excel</button>${A?`<button class="b ${E?'':'s'}" onclick="GZ.e=!GZ.e;gzT()">${E?'✔ پایان ویرایش':'✏️ ویرایش ردیف‌ها'}</button><button class="b s" onclick="GZ.cp=!GZ.cp;gzT()">🗂 ستون‌ها</button>`:''}</div>
 ${A&&GZ.cp?`<div class="card np"><b>ستون‌های گزارش</b>${C.map((c,i)=>`<div class="rpr"><span>${esc(c.label)}</span><span><button onclick="gzCe(${i})">✏️</button><button onclick="gzCd(${i})">🗑️</button></span></div>`).join('')}<div class="rda" onclick="gzCa()">+ افزودن ستون</div></div>`:''}
 ${A?`<div class="card np"><b>افزودن مورد جدید به گزارش ${fy(GZ.y)}</b><div class="f">${C.map(c=>`<div><label>${esc(c.label)}</label>${gzIn(c,null,`id="g_${c.k}"`)}</div>`).join('')}</div><button class="b" onclick="gzAdd()">افزودن</button></div>`:''}
@@ -407,8 +408,8 @@ function gzYear(){const y=+norm(prompt('سال جدید (مثلاً 1406):'));if
 function gzCa(){const n=(prompt('نام ستون جدید:')||'').trim();if(!n)return;db.gzc.push({k:'c'+Date.now(),label:n});save();gzT()}
 function gzCe(i){const c=db.gzc[i],n=prompt('نام ستون',c.label);if(n&&n.trim()){c.label=n.trim();save();gzT()}}
 function gzCd(i){const c=db.gzc[i];if(confirm('ستون «'+c.label+'» حذف شود؟ (داده‌های ثبت‌شده نگه داشته می‌شود)')){db.gzc.splice(i,1);save();gzT()}}
-function gzPdf(){GZ.e=0;GZ.cp=0;gzT();setTimeout(()=>print(),100)}
-function gzPdfAll(){GZ.e=0;GZ.cp=0;GZ.all=1;gzT();setTimeout(()=>print(),100)}
+function gzPdf(){GZ.e=0;GZ.cp=0;gzT();setTimeout(doPrint,100)}
+function gzPdfAll(){GZ.e=0;GZ.cp=0;GZ.all=1;gzT();setTimeout(doPrint,100)}
 onafterprint=()=>{if(GZ.all){GZ.all=0;if(tab=='gz')gzT()}};
 function gzX(){const C=db.gzc;csv([['ردیف',...C.map(c=>c.label)],...gzL().map((e,i)=>[i+1,...C.map(c=>e[c.k]||'')])],'report-'+GZ.y)}
 // ---------- ورود ----------
