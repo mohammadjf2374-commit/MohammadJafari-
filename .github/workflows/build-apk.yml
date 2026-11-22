@@ -25,6 +25,37 @@ jobs:
           npx cap init Conveyor com.mohammad.conveyor --web-dir www
           npx cap add android
           npx cap sync android
+          cat > "$(find android/app/src/main/java -name MainActivity.java)" <<'JAVA'
+          package com.mohammad.conveyor;
+
+          import android.os.Bundle;
+          import android.print.PrintAttributes;
+          import android.print.PrintDocumentAdapter;
+          import android.print.PrintManager;
+          import android.webkit.JavascriptInterface;
+          import android.webkit.WebView;
+          import com.getcapacitor.BridgeActivity;
+
+          public class MainActivity extends BridgeActivity {
+            @Override
+            public void onCreate(Bundle savedInstanceState) {
+              super.onCreate(savedInstanceState);
+              final WebView wv = getBridge().getWebView();
+              wv.addJavascriptInterface(new Object() {
+                @JavascriptInterface
+                public void print() {
+                  runOnUiThread(new Runnable() {
+                    public void run() {
+                      PrintManager pm = (PrintManager) getSystemService(PRINT_SERVICE);
+                      PrintDocumentAdapter ad = wv.createPrintDocumentAdapter("report");
+                      pm.print("report", ad, new PrintAttributes.Builder().build());
+                    }
+                  });
+                }
+              }, "AndroidPrint");
+            }
+          }
+          JAVA
           printf "\nconfigurations.all {\n  exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'\n  exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'\n}\n" >> android/app/build.gradle
           cd android
           chmod +x gradlew
