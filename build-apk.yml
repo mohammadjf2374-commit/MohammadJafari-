@@ -1,0 +1,66 @@
+name: Build APK
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Build Android project
+        run: |
+          mkdir www
+          cp "$(ls *.html | sort -V | tail -1)" www/index.html
+          echo "window.FB_CONFIG=null;" > www/firebase-config.js
+          for f in firebase-app-compat.js firebase-firestore-compat.js; do curl -fsSL https://www.gstatic.com/firebasejs/10.14.1/$f -o www/$f; done
+          npm init -y
+          npm i @capacitor/core @capacitor/cli @capacitor/android
+          npx cap init Conveyor com.mohammad.conveyor --web-dir www
+          npx cap add android
+          npx cap sync android
+          cat > "$(find android/app/src/main/java -name MainActivity.java)" <<'JAVA'
+          package com.mohammad.conveyor;
+
+          import android.os.Bundle;
+          import android.print.PrintAttributes;
+          import android.print.PrintDocumentAdapter;
+          import android.print.PrintManager;
+          import android.webkit.JavascriptInterface;
+          import android.webkit.WebView;
+          import com.getcapacitor.BridgeActivity;
+
+          public class MainActivity extends BridgeActivity {
+            @Override
+            public void onCreate(Bundle savedInstanceState) {
+              super.onCreate(savedInstanceState);
+              final WebView wv = getBridge().getWebView();
+              wv.addJavascriptInterface(new Object() {
+                @JavascriptInterface
+                public void print() {
+                  runOnUiThread(new Runnable() {
+                    public void run() {
+                      PrintManager pm = (PrintManager) getSystemService(PRINT_SERVICE);
+                      PrintDocumentAdapter ad = wv.createPrintDocumentAdapter("report");
+                      pm.print("report", ad, new PrintAttributes.Builder().build());
+                    }
+                  });
+                }
+              }, "AndroidPrint");
+            }
+          }
+          JAVA
+          printf "\nconfigurations.all {\n  exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'\n  exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'\n}\n" >> android/app/build.gradle
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: conveyor-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
